@@ -1,58 +1,53 @@
 # tableau-frontend — Repository Overview
 
 ### High-Level Purpose
-This repository hosts the `tableau_frontend` project, a private React application. Its primary objective is to provide a client-side user interface, integrate with external APIs, enable user authentication via Google OAuth, and embed Tableau visualizations. It is designed as a single-page application (SPA) with Progressive Web App (PWA) capabilities.
+This repository hosts a React-based single-page application (SPA) designed to display interactive Tableau dashboards. Its primary objective is to provide a user interface for accessing and visualizing Tableau content, integrating with external authentication (Google OAuth) and offering an enhanced user experience through Progressive Web App (PWA) capabilities.
 
 ### Architectural Structure
-The project follows a standard Create React App (CRA) structure for a client-side frontend. It is organized around:
-*   **Root Level**: Contains `package.json` which acts as the project manifest, defining dependencies, scripts, and configuration for Node.js package management and build processes.
-*   **`public` Directory**: Stores static assets like `index.html` (the primary HTML entry point), `manifest.json` (for PWA features), and various icons. These assets are served directly by a web server.
-*   **Source Code (Implied)**: Not detailed in summaries, but `react` and `react-scripts` imply a JavaScript/TypeScript source directory where the main application logic, components, and routing reside, mounting onto the `div id="root"` in `index.html`.
+The project is structured as a client-side Single Page Application. The `public/index.html` file serves as the initial entry point, acting as a static template processed by the browser. It includes external dependencies like the Tableau Embedding API and provides a mount point (`div#root`) for the dynamically rendered React application. The `public` directory also contains static assets and the `manifest.json` file, which configures PWA features. Development, build, and testing processes are orchestrated by `react-scripts` (Create React App), abstracting underlying tooling configurations.
 
 ### Core Components
-*   **React Application**: The central user interface, responsible for dynamic content rendering, routing, and state management.
-*   **Build Toolchain**: Managed by `react-scripts`, abstracting Webpack and Babel configurations for development, build, and test processes.
-*   **UI Frameworks**: `antd` provides a set of enterprise-level UI components, complemented by `tailwindcss` for utility-first styling.
-*   **Routing**: `react-router-dom` handles client-side navigation within the SPA.
-*   **API Client**: `axios` facilitates HTTP requests to backend services.
-*   **Authentication**: `@react-oauth/google` integrates Google OAuth for user authentication.
-*   **Tableau Embedding API**: Enables the integration and display of Tableau dashboards and visualizations directly within the application.
-*   **Web App Manifest**: `public/manifest.json` configures the application for PWA features, including installability and offline capabilities.
+*   **User Interface Layer**: Built with React and Ant Design, responsible for rendering interactive UI components and user interactions.
+*   **Routing Module**: Manages client-side navigation within the application using `react-router-dom`.
+*   **Data Access Module**: Handles asynchronous HTTP requests to backend APIs using `axios` for data retrieval and submission.
+*   **Authentication Module**: Integrates with Google OAuth via `@react-oauth/google` to manage user authentication flows.
+*   **Tableau Embedding Module**: Utilizes the Tableau Embedding API to embed and display live Tableau dashboards directly within the application.
+*   **Development Toolchain**: `react-scripts` provides a standardized environment for application development, building, and testing.
+*   **PWA Configuration**: `manifest.json` defines application metadata and behavior for installation as a Progressive Web App.
 
 ### Interaction & Data Flow
-The application's execution begins when a client browser loads `public/index.html`. This HTML document initializes the viewport, loads external resources like Google Fonts and the Tableau Embedding API, and provides a mount point (`div id="root"`) for the React application.
-
-Upon loading, the client-side JavaScript application (built by `react-scripts`) takes over:
-1.  **Rendering**: React components render the user interface based on application state and routes.
-2.  **API Communication**: `axios` sends HTTP requests to external APIs (not defined in summaries) to fetch and submit data.
-3.  **Authentication**: Google OAuth handles user login, providing tokens for subsequent authenticated requests.
-4.  **Tableau Integration**: The loaded Tableau Embedding API script allows the React application to dynamically embed and interact with Tableau dashboards.
-5.  **PWA Features**: The `manifest.json` enables the browser to offer "add to home screen" functionality, allowing the app to run in a standalone, app-like experience.
+1.  A web browser loads `public/index.html`, which initiates the application by loading necessary static resources and external scripts, including the Tableau Embedding API.
+2.  The React application's JavaScript bundle then executes, mounts its UI components into the `div#root` element, and takes over client-side rendering.
+3.  User interactions trigger state changes, routing via `react-router-dom`, and potential API calls using `axios` for backend data.
+4.  User authentication occurs through Google OAuth, redirecting users for login and handling token management.
+5.  Embedded Tableau dashboards are rendered by the Tableau Embedding API, interacting with the Tableau server to display visualizations.
+6.  The browser may offer to "install" the application based on the metadata in `public/manifest.json`, providing a native-like experience.
 
 ### Technology Stack
-*   **Frontend Framework**: React.js
-*   **Build System**: Create React App (`react-scripts`)
-*   **Package Manager**: npm/yarn (implied by `package.json`)
-*   **HTTP Client**: Axios
-*   **UI Libraries**: Ant Design (`antd`), Tailwind CSS
+*   **Frontend Framework**: React
+*   **UI Toolkit**: Ant Design, `react-icons`, `react-slick`
 *   **Routing**: React Router DOM
+*   **HTTP Client**: Axios
 *   **Form Management**: React Hook Form
 *   **Authentication**: Google OAuth (`@react-oauth/google`)
-*   **Notifications**: React Toastify
-*   **Embedding**: Tableau Embedding API
-*   **Testing**: React Testing Library, Jest (implied by `eslintConfig`)
-*   **PWA Support**: Web App Manifest
+*   **Build & Development**: Create React App (`react-scripts`), Tailwind CSS (development), ESLint
+*   **Testing**: React Testing Library (`@testing-library/react`, `jest-dom`, `user-event`)
+*   **Third-party APIs**: Tableau Embedding API, Google Fonts
 
 ### Design Observations
-The project leverages `create-react-app` for its build toolchain, prioritizing rapid development and a standardized setup over granular control of Webpack configurations. A hybrid approach to UI styling is indicated by the concurrent use of Ant Design for component-rich interfaces and Tailwind CSS for utility-first custom styling. The direct inclusion of the Tableau Embedding API in `index.html` highlights its critical role and the need for early loading. Google OAuth provides a robust external authentication mechanism. The `manifest.json` indicates an intent to deliver a Progressive Web App experience, enhancing user engagement and installability.
+The project leverages `react-scripts` to simplify its build system and development environment, reducing the overhead of manual configuration. The choice of Ant Design promotes rapid UI development and design consistency. Direct integration with the Tableau Embedding API and Google OAuth is central to the application's core functionality, enabling visualization and secure access. The inclusion of a Web App Manifest indicates an architectural consideration for PWA capabilities, aiming for an enhanced, installable user experience. The reliance on a broad set of third-party libraries points to a feature-rich application, potentially impacting bundle size and overall performance.
 
 ### System Diagram (Optional)
 ```mermaid
 graph TD
-    A[Client Browser] --> B[Load index.html]
-    B --> C[Initialize HTML Head Content]
-    C --> D[Load Static Assets]
-    C --> E[Load Google Fonts]
+    A[Browser Request] --> B[Load index.html]
+    B --> C[Process HTML Head]
+    C --> D[Load CSS/Fonts]
+    C --> E[Load manifest.json]
     C --> F[Load Tableau Embedding API]
-    B --> G[Provide JS Application Mount Point #root]
+    B --> G[Process HTML Body]
+    G --> H[Render No-Script Content]
+    G --> I[Provide div#root Element]
+    F -- Enables --> J[Embed Tableau Dashboards]
+    I -- Populated by --> K[Client-Side JavaScript Application]
 ```
