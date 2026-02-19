@@ -1,45 +1,39 @@
 # package.json
 
 ### Overview
-This file serves as the manifest for a React-based frontend application named `tableau_frontend`. It defines project metadata, manages project dependencies, and specifies scripts for common development tasks such as starting, building, testing, and ejecting the application.
+This file defines the project's metadata, scripts, and package dependencies for a React-based frontend application. It serves as the manifest for the `tableau_frontend` project.
 
 ### Architecture & Role
-Architecturally, this file defines the foundational configuration for a client-side frontend application. It operates at the project configuration layer, dictating the development environment, build tools, and runtime libraries required for the React application to function. It enables standard development workflows within a JavaScript ecosystem.
+This file is an integral part of the frontend layer, specifically for a client-side React application. It outlines the necessary external libraries and tools required for development, building, testing, and running the application, thereby establishing the foundation of its runtime environment.
 
 ### Key Components
-*   **name**: Identifies the project as `tableau_frontend`.
-*   **version**: Current version of the project, `0.1.0`.
-*   **private**: Set to `true`, indicating this package is not intended for publication to a public npm registry.
-*   **dependencies**: Lists runtime dependencies required by the application. This includes React, UI libraries (Ant Design), routing (React Router DOM), HTTP client (Axios), and authentication (@react-oauth/google).
-*   **devDependencies**: Lists development-only dependencies, specifically `tailwindcss` for styling.
-*   **scripts**: Defines command-line scripts for common tasks:
-    *   `start`: Initiates the development server.
-    *   `build`: Compiles the application for production deployment.
-    *   `test`: Runs application tests.
-    *   `eject`: Detaches the project from `react-scripts` configurations.
-*   **eslintConfig**: Specifies ESLint configuration, extending `react-app` and `react-app/jest` rules for code quality and testing.
-*   **browserslist**: Defines browser compatibility targets for production and development builds.
+*   **`name`**: `tableau_frontend` – The unique identifier for this project.
+*   **`version`**: `0.1.0` – The current version of the application.
+*   **`private`**: `true` – Indicates that this package is not intended for publication to a public registry.
+*   **`dependencies`**: Lists all packages required for the application to run in a production environment.
+*   **`devDependencies`**: Lists packages used exclusively for development and build processes.
+*   **`scripts`**: Defines command-line aliases for common tasks, such as starting the development server, building the application, and running tests.
+*   **`eslintConfig`**: Specifies ESLint configuration presets for code quality checks.
+*   **`browserslist`**: Defines the target browser compatibility for the application's compiled assets.
 
 ### Execution Flow / Behavior
-The `scripts` section defines the primary execution behaviors. When `npm start` is executed, `react-scripts start` launches a local development server. Similarly, `npm build` triggers `react-scripts build` to compile optimized production assets. `npm test` runs `react-scripts test` to execute configured test suites. These scripts encapsulate the standard Create React App development lifecycle.
+The `scripts` section defines various entry points for operating on the project:
+*   **`npm start`**: Executes `react-scripts start`, which typically launches a development server and opens the application in a web browser.
+*   **`npm build`**: Executes `react-scripts build`, which compiles the application into static files suitable for production deployment.
+*   **`npm test`**: Executes `react-scripts test`, which runs unit and integration tests configured for the project.
+*   **`npm eject`**: Executes `react-scripts eject`, a one-way operation to copy configuration files and build dependencies into the project, removing the abstraction of `react-scripts`.
 
 ### Dependencies
-*   **@react-oauth/google**: Provides Google OAuth functionality for user authentication.
-*   **@testing-library/jest-dom**, **@testing-library/react**, **@testing-library/user-event**: Core libraries for testing React components.
-*   **antd**: A widely used UI component library, providing pre-built components.
-*   **axios**: A promise-based HTTP client for making API requests.
-*   **react**, **react-dom**: Core libraries for building user interfaces with React.
-*   **react-hook-form**: Library for form validation and management.
-*   **react-icons**: Provides a collection of popular icon libraries.
-*   **react-router-dom**: Enables declarative routing within the application.
-*   **react-scripts**: Core dependency for Create React App, abstracting build tools and configurations.
-*   **react-slick**, **slick-carousel**: Libraries for creating carousels and sliders.
-*   **react-toastify**: Provides components for displaying toast notifications.
-*   **web-vitals**: For measuring and reporting on crucial user experience metrics.
-*   **tailwindcss** (devDependencies): A utility-first CSS framework used for styling during development.
+*   **Core UI & State Management**: `react`, `react-dom`, `react-hook-form`.
+*   **Routing**: `react-router-dom`.
+*   **UI Components & Styling**: `antd`, `react-icons`, `tailwindcss` (dev dependency).
+*   **Data Fetching**: `axios`.
+*   **Authentication**: `@react-oauth/google`.
+*   **UI Utilities**: `react-slick`, `slick-carousel` (for carousels), `react-toastify` (for notifications).
+*   **Development & Testing Tools**: `react-scripts`, `@testing-library/jest-dom`, `@testing-library/react`, `@testing-library/user-event`, `web-vitals`.
 
 ### Design Notes
-The project leverages `react-scripts` to manage its build system, testing setup, and development server, reducing the need for manual Webpack or Babel configurations. This simplifies project setup and maintenance. The reliance on a comprehensive UI library like Ant Design suggests a focus on rapid UI development and adherence to established design patterns. The use of `@react-oauth/google` indicates integration with external authentication providers.
+The `private: true` setting is a standard practice for frontend applications not intended to be consumed as a library. The reliance on `react-scripts` centralizes build configurations, simplifying setup but limiting direct control over underlying webpack/babel settings unless `eject` is used. The selection of UI libraries like Ant Design and component-specific libraries like `react-slick` indicates a focus on rich, interactive user interfaces.
 
 ### Diagram (Optional)
 None significant.
