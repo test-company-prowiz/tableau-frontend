@@ -1,61 +1,47 @@
 # public/index.html
 
 ### Overview
-This file serves as the main entry point for the web application, providing the foundational HTML structure. It defines metadata, links to external resources like stylesheets and a web app manifest, and includes an external JavaScript library for Tableau integration. It also specifies the root element where the client-side application will mount.
+This file serves as the main entry point for the client-side web application. It defines the foundational HTML structure, metadata, external resource links, and a designated mount point for a JavaScript-driven application. Its primary role is to bootstrap the user interface.
 
 ### Architecture & Role
-Architecturally, `index.html` functions as the client-side root document, part of the presentation layer. It is a static asset delivered by a web server upon an initial browser request. Its role is to bootstrap the single-page application (SPA) by defining the viewport, loading essential resources, and providing the mount point for the JavaScript application bundle.
+Architecturally, this file represents the initial presentation layer of the application. It is served by a web server and loaded directly by the client's browser. It acts as the host document for a single-page application (SPA), providing the basic scaffolding before client-side JavaScript takes over to render dynamic content.
 
 ### Key Components
-- `<!DOCTYPE html>`: Declares the document as an HTML5 standard.
-- `<html lang="en">`: The root element, specifying the document language.
-- `<head>`: Contains metadata and resource links:
-    - `<meta charset="utf-8" />`: Specifies character encoding.
-    - `<meta name="viewport" ... />`: Configures the viewport for responsive behavior.
-    - `<meta name="description" ... />`: Provides a brief description for the page.
-    - `<link rel="icon" ... />`, `<link rel="apple-touch-icon" ... />`: Defines various favicons.
-    - `<link href="https://fonts.googleapis.com/css2?..." rel="stylesheet">`: Imports custom fonts from Google Fonts.
-    - `<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />`: Links to the web application manifest.
-    - `<script type="module" src="https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.js"></script>`: Integrates the Tableau embedding API.
-    - `<title>Qadence by TQG</title>`: Sets the browser tab title.
-- `<body>`: Contains the visible content of the page:
-    - `<noscript>`: Provides fallback content if JavaScript is disabled.
-    - `<div id="root"></div>`: The designated mount point where the main JavaScript application will inject its UI components.
-- `%PUBLIC_URL%`: A placeholder, replaced during the build process with the correct public URL path.
+*   **HTML Structure**: Defines the `<!DOCTYPE html>`, `<html>`, `<head>`, and `<body>` elements, forming the standard web page structure.
+*   **Metadata**: Includes `<meta>` tags for character set, viewport configuration, theme color, and a description.
+*   **Favicon and Touch Icons**: Links to `favicon.ico` and `logo192.png` for browser tab icons and home screen icons on mobile devices.
+*   **Web Manifest**: Links to `manifest.json`, supporting Progressive Web Application (PWA) features.
+*   **Google Fonts**: Imports custom fonts (`Exo`, `Inter`, `Outfit`) from Google Fonts for application styling.
+*   **Tableau Embedding API**: Includes a `<script>` tag to load the Tableau embedding JavaScript API (`tableau.embedding.3.latest.js`), indicating the application's intent to display or interact with Tableau dashboards.
+*   **Application Mount Point**: Contains an empty `<div id="root"></div>` element within the `<body>`, which is a common convention for client-side frameworks (e.g., React) to inject and manage the application's user interface.
+*   **Noscript Warning**: A `<noscript>` tag informs users to enable JavaScript if it is disabled, as the application relies on client-side scripting.
 
 ### Execution Flow / Behavior
-1. A browser initiates a request for the application's root URL.
-2. The web server responds by serving the `public/index.html` file.
-3. The browser parses the HTML, loading specified resources from the `<head>` section, including: favicons, Google Fonts stylesheets, the `manifest.json` file, and the Tableau embedding API script.
-4. If JavaScript is disabled, the `<noscript>` content is displayed. Otherwise, the empty `<div id="root"></div>` is rendered.
-5. During the application's build process (e.g., using a tool like Webpack), the compiled JavaScript application bundle is injected into the `<body>` element.
-6. This injected JavaScript then executes, initializing the client-side framework (e.g., React) and rendering the application's components into the `<div id="root"></div>`, populating the page dynamically.
+When a browser requests the application's URL, the web server delivers this `index.html` file. The browser then:
+1.  Parses the HTML, setting up the basic document structure.
+2.  Interprets `<meta>` tags to configure viewport, character set, and other page-level settings.
+3.  Initiates loading of linked resources like `favicon.ico`, `manifest.json`, and Google Fonts CSS.
+4.  Fetches and executes the `tableau.embedding.3.latest.js` script, making the Tableau embedding API available.
+5.  Prepares the `<div id="root"></div>` element as a placeholder.
+6.  Subsequently, the application's main JavaScript bundle (not defined in this file but expected through a build process) will load and dynamically render the user interface into this `#root` div.
 
 ### Dependencies
-- **External CSS/Fonts:**
-    - `https://fonts.googleapis.com/css2?...`: Google Fonts for typography.
-- **External JavaScript:**
-    - `https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.js`: Tableau Embedding API, enabling the integration of Tableau dashboards within the application.
-- **Internal Resources (referenced via `%PUBLIC_URL%`):**
-    - `favicon.ico`, `logo192.png`: Icons for the web application.
-    - `manifest.json`: Web App Manifest, crucial for Progressive Web App (PWA) features.
-- **Build System:** The file implicitly depends on a build process (e.g., Create React App's Webpack configuration) to replace `%PUBLIC_URL%` placeholders and inject the application's main JavaScript bundle into the `<body>`.
+*   **External Script**: `https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.js` for Tableau integration.
+*   **External Stylesheet**: Google Fonts (`https://fonts.googleapis.com/css2?family=Exo:wght@300;400;600&family=Inter:wght@600;400&family=Outfit&display=swap`).
+*   **Local Resources**: `favicon.ico`, `logo192.png`, and `manifest.json`, located in the `public` directory (paths resolved by a build process using `%PUBLIC_URL%`).
+*   **Client-side JavaScript Application**: The file implicitly depends on a JavaScript application bundle that will target and render content into the `<div id="root"></div>`.
 
 ### Design Notes
-- **Single-Page Application (SPA) Foundation:** This file is configured as a template for an SPA, where the primary content is rendered client-side by JavaScript into the designated `#root` element.
-- **Tableau Integration:** The direct import of the Tableau embedding API indicates a core feature requirement to display or interact with Tableau dashboards as part of the application.
-- **PWA Support:** The inclusion of `manifest.json` and theme-color meta tags suggests an intention to support Progressive Web App functionality, allowing the application to be installed and behave more like a native app.
-- **Build-Time Transformation:** The use of `%PUBLIC_URL%` and the comments regarding script injection highlight that this file undergoes transformation during the build process, rather than being used exactly as-is in production.
+*   The use of `%PUBLIC_URL%` placeholders indicates that this file is a template processed by a build system (e.g., Create React App, Webpack) to inject correct asset paths during compilation for different deployment environments.
+*   The `<div id="root"></div>` pattern is a standard design for modern client-side frameworks, enabling a single-page application architecture where JavaScript controls the entire DOM within this element.
+*   Direct inclusion of the Tableau embedding API suggests a tight integration with Tableau for data visualization or reporting as a core feature.
+*   The file is designed to be a static template, with dynamic content primarily injected via JavaScript, rather than server-side rendering.
 
 ### Diagram (Optional)
 ```mermaid
 graph TD
-A[Browser Request] --> B[Web Server]
-B --> C[index.html]
-C --> D[Load Meta & Fonts]
-C --> E[Load Tableau API]
-C --> F[Load Manifest]
-C --> G[Load Main App JS Bundle]
-G --> H[Mount App to div id root]
-H --> I[Display Interactive UI]
+A[Browser Request] --> B[Load index html]
+B --> C[Initialize Page Metadata]
+B --> D[Load Tableau Embedding API]
+B --> E[Prepare Application Mount Point]
 ```
