@@ -1,64 +1,79 @@
 # tableau-frontend — Repository Overview
 
 ### High-Level Purpose
-The `tableau-frontend` repository hosts a client-side React application named "Qadence by TQG". Its primary objective is to provide an interactive user interface for viewing and interacting with Tableau dashboards, likely involving user authentication, data fetching, and managing application-specific views.
+This repository contains the frontend application for "Qadence," a web interface primarily designed to display and interact with Tableau dashboards. It provides user authentication capabilities, including email/password and Google OAuth, and dynamically embeds Tableau visualizations sourced from a backend service. The application aims to offer a tailored user experience for accessing and viewing specific Tableau content.
 
 ### Architectural Structure
-The repository follows a standard Create React App (CRA) structure.
-*   **Root Level**: Contains project configuration files such as `package.json` for dependency management and build scripts, and `tailwind.config.js` for styling customization.
-*   **`public/` Directory**: Houses static assets including `index.html` (the application's entry point), `manifest.json` for Progressive Web App (PWA) capabilities, and various icons.
-*   **`src/` Directory**: Contains the primary application source code, including React components, global styles (`App.css`), and dedicated sub-directories like `Mock/` for development-specific data.
+The repository follows a standard Single-Page Application (SPA) architecture, structured around a React framework.
+
+-   **Root Directory**: Contains core configuration files such as `package.json` for dependency management and scripts, and `tailwind.config.js` for styling configuration.
+-   **`public/`**: Stores static assets critical for the application's initial load and Progressive Web App (PWA) features. This includes `index.html` (the single entry point), `manifest.json`, and static images.
+-   **`src/`**: Houses the application's source code, organized into functional directories:
+    -   **`src/Pages/`**: Contains top-level React components representing distinct application views (e.g., `Login.jsx`, `Dashboard.jsx`).
+    -   **`src/Mock/`**: Provides static mock data (`view.js`) used for development and testing, simulating backend API responses.
+    -   **`src/App.css`**: Defines global application styles and overrides for third-party UI components.
+-   **Backend Interaction**: The application communicates with a separate backend API for authentication and token retrieval using `axios`.
 
 ### Core Components
-*   **React Application Core**: Built using React, responsible for rendering the user interface, managing component lifecycle, and handling application state.
-*   **Build & Dependency System**: `package.json` orchestrates project dependencies, defines build and development scripts, and configures the development ecosystem.
-*   **Application Entry Point**: `public/index.html` serves as the initial document loaded by the browser, providing the root DOM element (`#root`) for React to render into, and pre-loading critical external scripts like the Tableau Embedding API.
-*   **Progressive Web App (PWA) Manifest**: `public/manifest.json` defines metadata enabling the application to be installed and provide an app-like experience.
-*   **Global Styling**: `src/App.css` provides base styles and overrides for external UI libraries (e.g., `react-slick`).
-*   **Mock Data Module**: `src/Mock/view.js` offers static data for development and testing environments, simulating backend API responses for view-related information.
-*   **Tailwind CSS Configuration**: `tailwind.config.js` customizes the utility-first CSS framework's theme and specifies files for class scanning.
+-   **`package.json`**: Manages project dependencies (React, Ant Design, Axios, React Router DOM, Google OAuth, etc.) and defines build, start, and test scripts.
+-   **`public/index.html`**: The application's entry point, loading the main JavaScript bundle and the Tableau Embedding API, and defining the `#root` mount point for the React application.
+-   **`public/manifest.json`**: Configures the application as a Progressive Web App (PWA), specifying icons, names, and display modes for installation on user devices.
+-   **`src/App.css`**: Contains global CSS rules and styling specific to components like `react-slick` carousels and loading indicators.
+-   **`src/Pages/Login.jsx`**: Handles user authentication, allowing login via email/password or Google OAuth, and manages client-side form validation and UI feedback.
+-   **`src/Pages/Dashboard.jsx`**: Responsible for fetching Tableau authentication tokens from the backend, caching them, and dynamically embedding Tableau visualizations using the Tableau Embedding API's `<tableau-viz>` web component.
+-   **`src/Mock/view.js`**: Provides static, predefined data structures to simulate view-related data from a backend, used for development and testing.
 
 ### Interaction & Data Flow
-1.  **Client Initialization**: A user's browser requests `public/index.html` from a web server, initiating the application load.
-2.  **Static Asset Loading**: `index.html` references and loads static assets, including `public/manifest.json` for PWA features, external stylesheets (e.g., Google Fonts), and the Tableau Embedding API script.
-3.  **JavaScript Application Bootstrapping**: The main JavaScript bundle (generated from `src/` files) is loaded and executed, mounting the React application into the `<div id="root">` element.
-4.  **UI Rendering**: The React application renders its components, applying styles defined in `src/App.css` and those generated by Tailwind CSS (configured via `tailwind.config.js`).
-5.  **Data Interaction**: The application uses `axios` for HTTP requests to fetch data from a backend service. During development, `src/Mock/view.js` can supply static view data.
-6.  **Authentication**: User authentication is facilitated via `@react-oauth/google` for integration with Google's OAuth services.
-7.  **Navigation**: `react-router-dom` manages client-side routing, enabling navigation between different views within the single-page application.
-8.  **Tableau Integration**: The Tableau Embedding API allows the React application to embed and interact with Tableau visualizations directly within the web application.
+1.  **Application Bootstrapping**: A user's browser requests `public/index.html`. This file loads the Tableau Embedding API and serves as the mount point for the React application.
+2.  **Authentication**:
+    *   The `Login` page (`src/Pages/Login.jsx`) handles user input for email/password or initiates a Google OAuth flow.
+    *   Credentials or Google access tokens are sent via `axios` to a backend API (`/auth`) for verification.
+    *   Upon successful authentication, the backend typically establishes a session (e.g., via cookies), and the frontend navigates the user to the `/home` route.
+3.  **Dashboard Display**:
+    *   The `Dashboard` page (`src/Pages/Dashboard.jsx`) receives the Tableau dashboard path via `react-router-dom`'s `location.state`.
+    *   It calls `getToken()` to acquire a Tableau authentication token. `getToken()` first checks a client-side cache, and if no valid token is present, it makes an `axios` request to the backend API (`/tableau/token`).
+    *   With the token and dashboard path, the `Dashboard` component dynamically constructs and injects a `<tableau-viz>` web component into the DOM, embedding the Tableau visualization.
+4.  **Styling**: Global styles from `src/App.css` and Tailwind CSS utilities (configured via `tailwind.config.js`) are applied throughout the rendering process.
+5.  **Mock Data Usage**: During development or testing, components can import and use `src/Mock/view.js` to simulate data presence without needing a live backend connection.
 
 ### Technology Stack
-*   **Frontend Framework**: React (`react`, `react-dom`).
-*   **Build System**: `react-scripts` (Create React App), which abstracts Webpack and Babel configurations.
-*   **Package Management**: npm.
-*   **UI Components**: Ant Design (`antd`), `react-slick` for carousels, `react-toastify` for notifications, `react-icons`.
-*   **Styling**: Tailwind CSS (`tailwindcss`) with a custom configuration, supplemented by direct CSS (`App.css`).
-*   **API Interaction**: `axios` for HTTP client requests.
-*   **Authentication**: `@react-oauth/google` for Google OAuth integration.
-*   **Client-side Routing**: `react-router-dom`.
-*   **Form Management**: `react-hook-form`.
-*   **Testing**: React Testing Library (`@testing-library/react`, `@testing-library/jest-dom`).
-*   **Tableau Integration**: Tableau Embedding API (external JavaScript library).
-*   **Language**: JavaScript (with support for JSX, and implicitly TypeScript based on `tailwind.config.js` content paths).
+-   **Frontend Framework**: React
+-   **Build System**: Create React App (via `react-scripts`)
+-   **UI Library**: Ant Design (`antd`)
+-   **Styling**: Tailwind CSS (`tailwindcss`), custom CSS
+-   **Routing**: React Router DOM (`react-router-dom`)
+-   **HTTP Client**: Axios (`axios`)
+-   **Authentication**: Google OAuth (`@react-oauth/google`), custom backend authentication
+-   **Form Management**: React Hook Form (`react-hook-form`)
+-   **Notifications**: React Toastify (`react-toastify`)
+-   **Icons**: React Icons (`react-icons`)
+-   **Carousel**: React Slick (`react-slick`), Slick Carousel (`slick-carousel`)
+-   **Embedding**: Tableau Embedding API (external script)
+-   **Linting**: ESLint (configured in `package.json`)
+-   **Testing**: React Testing Library (`@testing-library/*`), Jest
 
 ### Design Observations
-*   **Create React App Foundation**: The project is built upon `react-scripts`, providing a standardized and managed build setup, which simplifies initial configuration but might require ejecting for advanced customizations.
-*   **Hybrid Styling Strategy**: The application integrates both Ant Design for structured UI components and Tailwind CSS for utility-first styling, allowing for a flexible and potentially efficient approach to UI development.
-*   **Progressive Web App Readiness**: The inclusion of `manifest.json` indicates an intent to provide PWA features, enhancing user engagement through installability and an app-like experience.
-*   **Direct Tableau Integration**: The explicit referencing of the Tableau Embedding API in `index.html` is central to the application's core functionality, enabling seamless display and interaction with Tableau dashboards.
-*   **Dedicated Mock Data**: The presence of `src/Mock/view.js` demonstrates a clear practice for providing static data, facilitating independent frontend development and consistent testing.
-*   **Atypical `npm`/`i` Dependencies**: The `package.json` file lists `npm` and `i` as production dependencies, which is unusual for a runtime application and may warrant further investigation for potential configuration cleanup or clarification.
+-   The project benefits from a managed build setup via `react-scripts`, abstracting complex Webpack/Babel configurations.
+-   A hybrid styling approach combining Ant Design components with Tailwind CSS utilities is employed, offering both structured UI elements and flexible custom styling.
+-   Client-side caching of Tableau authentication tokens in `Dashboard.jsx` optimizes API calls and enhances performance.
+-   The application supports multiple authentication methods (email/password and Google OAuth), improving user accessibility.
+-   The inclusion of `manifest.json` indicates an intent to support Progressive Web App features for enhanced user experience and installability.
+-   The presence of `src/Mock/view.js` facilitates independent frontend development and testing.
+-   Dynamic HTML injection using `innerHTML` for the Tableau web component in `Dashboard.jsx` requires careful consideration regarding potential Cross-Site Scripting (XSS) vulnerabilities if input data is not sufficiently trusted.
+-   The `package.json` lists `npm` and `i` (an alias for `npm install`) as dependencies, which is atypical for production applications and may warrant review.
 
 ### System Diagram
 ```mermaid
 graph TD
-A[Browser Request] --> B[Web Server]
-B --> C[public index html]
-C --> D[Load Tableau JS API]
-C --> E[Load JS App Bundle]
-E --> F[React Application]
-F --> G[Data Backend API]
-F --> H[Google Auth Service]
-F --> I[Tableau Embedded Views]
+A[Browser Request] --> B[index html]
+B --> C[React App Mounts]
+C --> D{User Authenticated?}
+D -- No --> E[Login Page]
+E --> F[Auth Backend API]
+F -- Success --> G[Home Page]
+D -- Yes --> G
+G --> H[Dashboard Page]
+H --> I{Request Tableau Token}
+I --> J[Tableau Token Backend API]
+J --> K[Embed Tableau Viz]
 ```
