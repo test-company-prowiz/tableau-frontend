@@ -7,60 +7,44 @@
  src/Pages/Dashboard.jsx
 
  Overview
-This file defines the `Dashboard` React component, which is responsible for rendering an embedded Tableau dashboard. It handles fetching an authentication token from a backend service and dynamically injecting the `tableau-viz` web component to display the specified dashboard.
+This file defines the `Dashboard` React functional component. Its primary purpose is to display an embedded Tableau dashboard by dynamically creating and inserting a `tableau-viz` web component. It manages the retrieval of a Tableau authentication token from a backend API to enable secure access to the dashboard.
 
  Architecture & Role
-This file resides in the frontends presentation layer as a React component. It functions as a view component that displays external content Tableau dashboards to the user. It interacts with both the client-side routing system `react-router-dom` and a backend API `axios` to fulfill its purpose.
+This file functions as a presentation layer component within the frontend application, specifically a page component. It is responsible for rendering the Tableau visualization and managing the user interface elements related to it, such as navigation and logout. It interacts with the applications backend to procure necessary authentication data for the Tableau embedded component.
 
  Key Components
-*   **`Dashboard` Functional Component** The primary React component rendered as a page.
-*   **`useEffect` Hook** Manages the side effect of loading the Tableau dashboard upon component mount.
-*   **`useLocation` Hook** Retrieves state data, specifically the Tableau dashboard URL, passed during navigation.
-*   **`useNavigate` Hook** Provides programmatic navigation capabilities within the application.
-*   **`getToken` Async Function** Fetches a Tableau authentication token from the configured backend API endpoint and implements a client-side token caching mechanism with a 10-minute expiration.
-*   **`loadTableaudash` Async Function** Orchestrates the embedding process by first acquiring a token and then constructing and injecting the `tableau-viz` custom element into the DOM.
-*   **`TABLEAU_HOST`, `TABLEAU_CONTENT_URL`** Constants defining the Tableau Online instance and content URL.
-*   **`IoArrowBackSharp`** An icon used for navigation back to the home page.
+- **`Dashboard` function component** The main React component that orchestrates the display of the Tableau dashboard and includes navigation controls.
+- **`useEffect` hook** Initiates the loading of the Tableau dashboard when the component first mounts. It extracts and processes the target dashboard URL from the `location.state`.
+- **`getToken` async function** Responsible for making an authenticated HTTP GET request to the backend at `${API}/tableau/token` to retrieve a Tableau authentication token. It implements a basic client-side caching mechanism, storing the token for 10 minutes.
+- **`loadTableau` async function** Constructs the HTML string for the `tableau-viz` web component, incorporating the Tableau host, content URL, dashboard path, and the acquired authentication token. This HTML is then injected into a designated `div` element in the DOM.
+- **`TABLEAU_HOST`** A constant specifying the base URL for the Tableau Online instance.
+- **`TABLEAU_CONTENT_URL`** A constant identifying the Tableau site content URL within the host.
+- **`IoArrowBackSharp`** An icon from `react-icons` used for the back navigation functionality.
 
  Execution Flow / Behavior
-1.  The `Dashboard` component mounts and retrieves `data` expected to be a Tableau dashboard path from `location.state`.
-2.  The `useEffect` hook triggers on mount. It parses the received `data` URL and calls `loadTableau` with the modified path.
-3.  The `loadTableau` function calls `getToken` to acquire an authentication token.
-4.  `getToken` makes an `HTTP GET` request to the backend at `${API}/tableau/token` to obtain a fresh token if the local `token` variable is null. Upon successful retrieval, it stores the token and sets a 10-minute timeout to clear it, implementing a simple client-side cache.
-5.  Once `loadTableau` receives a token, it constructs an HTML string for the `tableau-viz` custom element, including the dashboard source, the retrieved token, and presentation attributes.
-6.  This HTML string is then directly inserted into the `div` element with `id=tableau` using `innerHTML`, which renders the Tableau dashboard.
-7.  User interactions are handled
-    *   Clicking the back arrow `IoArrowBackSharp` navigates the user to the `/home` route.
-    *   Clicking Logout clears the `session` cookie and navigates the user to the root `/` route.
+1. Upon the `Dashboard` components initial render, the `useEffect` hook executes.
+2. Inside `useEffect`, the dashboard path is extracted from the `location.state.data` prop and pre-processed by removing a specific segment from its URL.
+3. The `loadTableau` function is then invoked with the processed dashboard path.
+4. `loadTableau` first calls `getToken` to obtain an authentication token.
+5. `getToken` performs an asynchronous API call to the backend. If successful, it stores the token and sets a timeout to clear it after 10 minutes 600,000 milliseconds.
+6. Once `getToken` returns a valid token, `loadTableau` dynamically generates the HTML markup for a `tableau-viz` web component, embedding the token, host, content URL, and dashboard path.
+7. This generated HTML is subsequently injected into the `div` element with the ID `tableau`, causing the Tableau dashboard to render within the page.
+8. The component also renders a header containing a back button navigating to `/home` and a logout button that clears the `session` cookie and redirects to the root path `/`.
 
  Dependencies
-*   **`react`** Core React library for UI development.
-*   **`react-router-dom`** Provides routing hooks `useLocation`, `useNavigate`.
-*   **`axios`** HTTP client for making API requests to the backend.
-*   **`../App`** Imports the `API` constant, which presumably holds the base URL for backend services.
-*   **`react-icons/io5`** Provides the `IoArrowBackSharp` icon used in the UI.
-*   **Tableau `tableau-viz` Custom Element** This component is expected to be globally available in the browser environment, likely loaded via a script tag, as its used directly in `innerHTML` without a direct import.
+- **`react`** For core React functionalities, including `useEffect`.
+- **`react-router-dom`** Provides `useLocation` to access route state and `useNavigate` for programmatic routing.
+- **`../App`** Imports the `API` constant, which serves as the base URL for backend API requests.
+- **`axios`** An HTTP client used to make asynchronous requests to the backend for the Tableau token.
+- **`react-icons/io5`** Imports specific icons, such as `IoArrowBackSharp`, for UI elements.
+- **Tableau JavaScript API implicit** The `tableau-viz` web component implicitly relies on the Tableau embedding library to function correctly.
 
  Design Notes
-*   **Direct DOM Manipulation** The component directly manipulates the DOM using `document.getElementById.innerHTML` to embed the `tableau-viz` custom element. This bypasses Reacts virtual DOM and component lifecycle management for the embedded content.
-*   **Client-Side Token Caching** The Tableau token is managed using a local variable and a `setTimeout` for expiration. This is a basic client-side cache, but its not integrated with Reacts state management and would reset if the component unmounts and remounts within the 10-minute window.
-*   **Hardcoded Tableau Configuration** The `TABLEAU_HOST` and `TABLEAU_CONTENT_URL` constants are hardcoded within the file, making it less flexible for deployment to different Tableau environments without code changes.
-*   **Fixed Dimensions** The `tableau-viz` element is rendered with fixed `height=90vh` and `width=3300px`, which might lead to unexpected layout or horizontal scrolling issues on various screen sizes.
-*   **Logout Mechanism** The logout functionality directly manipulates `document.cookie` to clear the session. While functional, encapsulating this in a dedicated authentication context or utility could offer a more centralized and maintainable approach.
+- The component employs a client-side caching strategy for the Tableau authentication token, valid for 10 minutes, to reduce frequent backend requests.
+- Tableau dashboard embedding is achieved by injecting raw HTML containing the `tableau-viz` custom element directly into the DOM, which is a common pattern for integrating web components.
+- The logic for parsing `data` from `location.state` explicitly filters out the second segment of the URL, suggesting a specific, expected URL structure passed via route state.
+- The `tableau-viz` component is given a fixed `width=3300px`, which may lead to horizontal scrollbars or layout issues on displays smaller than this width. This might be a candidate for responsive design improvements.
+- Logout functionality directly manipulates `document.cookie` to expire the `session` cookie.
 
- Diagram
-```mermaid
-graph TD
-A[Dashboard Component Mounts] -- B{Get Dashboard Data from Location State}
-B -- C[Call loadTableau with Parsed Data]
-C -- D[getToken Function]
-D -- Fetches from -- E[Backend API /tableau/token]
-E -- Returns token -- D
-D -- F{Is Token Valid?}
-F -- Yes -- G[Construct tableau-viz HTML String]
-G -- H[Inject HTML into tableau Div]
-H -- I[Tableau Dashboard Rendered]
-I -- J[User Interaction]
-J -- Click Back -- K[Navigate to /home]
-J -- Click Logout -- L[Clear Session Cookie & Navigate to /]
-```
+ Diagram Optional
+None significant.
