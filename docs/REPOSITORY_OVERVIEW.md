@@ -12,7 +12,7 @@ The repository adopts a Create React App (CRA) structure with distinct layers:
 *   **Application Source (`src/`)**:
     *   **Root Application (`App.jsx`)**: Configures client-side routing and global API endpoint.
     *   **Page-Level Components (`src/Pages/`)**: Contains feature-specific views like `Login.jsx`, `Home.jsx`, and `Dashboard.jsx`.
-    *   **Shared Components (`src/Components/`)**: Intended for reusable UI elements, though some are currently commented out.
+    *   **Shared Components (`src/Components/`)**: Intended for reusable UI elements, though `Sidenav.jsx` is currently commented out.
     *   **Styling (`App.css`)**: Global application styles and overrides.
     *   **Mock Data (`src/Mock/`)**: Provides static data for development and testing, though often unused in current runtime logic.
     *   **Services (`src/Services/`)**: Intended for API abstraction, but not consistently utilized in current implementations.
