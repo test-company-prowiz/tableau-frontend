@@ -1,28 +1,39 @@
 # src/Mock/view.js
 
-> **Source File:** [src/Mock/view.js](https://github.com/test-company-prowiz/tableau-frontend/blob/main/src/Mock/view.js)  
-> **Repository:** `tableau-frontend`  
+> **Source File:** [src/Mock/view.js](https://github.com/test-company-prowiz/tableau-frontend/blob/main/src/Mock/view.js)
+> **Repository:** `tableau-frontend`
 > **Branch:** `main`
 
+>>> GENERATED USING CUSTOM USER PROMPT <<<
 # src/Mock/view.js
 
 ### Overview
-This file exports a constant JavaScript object, `allViews`, which contains a predefined set of mock data representing various "views". Its primary purpose is to provide static data for development or testing environments, simulating responses from a backend service that would typically provide view-related information.
+This file exports a static JavaScript object named `allViews`, which serves as a mock data source for a collection of "view" entities. It is intended to simulate an API response for a list of views. This documentation was generated using a custom user prompt override.
 
 ### Architecture & Role
-Architecturally, this file resides within the `Mock` directory, indicating its role as a local data source for development and testing. It functions as a foundational data layer within the mock system, supplying structured view data that other components can import and consume when a real API is not in use. It does not perform any computation or interact with external systems.
+Architecturally, this file acts as a local data provider within a mock layer. Its role is to supply predefined data, typically for development, testing, or demonstrating features where a live backend or API endpoint for fetching views is unavailable or undesirable. It prevents direct dependencies on external services during specific development phases.
 
 ### Key Components
-*   `allViews`: The sole export of this file. It is a JavaScript object containing a `data` property, which in turn holds a `views` array. Each element in the `views` array is an object representing a single view, complete with properties like `owner`, `project`, `tags`, `location`, `id`, `name`, `contentUrl`, `createdAt`, `updatedAt`, and `viewUrlName`.
+-   **`allViews`**: A `const` exported object. It contains a `data` property, which in turn holds a `views` array.
+    -   The `views` array consists of multiple objects, each representing a distinct "view" entity.
+    -   Each view object includes properties such as `id`, `name`, `contentUrl`, `viewUrlName`, `owner` (with an `id`), `project` (with an `id`), `location` (with `id` and `type`), `tags`, `createdAt`, and `updatedAt`.
 
 ### Execution Flow / Behavior
-The file does not contain any executable logic or functions. When imported by other modules, the `allViews` constant is directly made available with its full data structure. There is no runtime behavior beyond the initial load of this static data.
+This file does not contain executable logic beyond defining and exporting the `allViews` constant. When imported into another module, the `allViews` object becomes directly accessible, allowing consumers to access the predefined static view data. There are no functions or dynamic operations performed within this file.
 
 ### Dependencies
-None significant. This file is self-contained and does not import any other modules or rely on external libraries.
+None significant. This file is self-contained and does not import any external modules or internal project files.
 
 ### Design Notes
-This file is designed to provide hardcoded, immutable data. This approach is beneficial for consistent testing and rapid UI development without needing a connected backend. The data structure mimics what might be expected from a "get all views" API endpoint. A potential improvement could involve encapsulating this data within functions that simulate API calls, allowing for more dynamic mock behavior such as filtering or error simulation, if needed in the future.
+The `allViews` object is designed to replicate the structure of a typical API response for a list of views. This approach is beneficial for:
+-   **Frontend Development**: Enables independent development and testing of UI components that consume view data without requiring a live backend.
+-   **Unit/Integration Testing**: Provides consistent, predictable data for tests, ensuring determinism.
+-   **Demonstrations**: Allows for quick setup of application states for demos or local development.
 
-### Diagram (Optional)
+The data within `allViews` is hardcoded, meaning any changes to the simulated view data require direct modification of this file.
+
+### Diagram
 None significant.
+
+### Custom Note
+This documentation was generated using a USER-DEFINED PROMPT (NOT DEFAULT).
