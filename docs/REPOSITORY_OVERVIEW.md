@@ -30,25 +30,6 @@ The repository adopts a Create React App (CRA) structure with distinct layers:
 ### Interaction & Data Flow
 The application flow initiates with user authentication on the `Login` page, utilizing either email/password or Google OAuth to interact with the backend `/auth` endpoint. Successful authentication redirects the user to the `Home` page. Here, lists of Tableau workbooks and views are fetched from `/tableau/workbooks` and `/tableau/views` respectively, presented in a browseable interface. Users can search and filter these views. Selecting a specific view navigates to the `Dashboard` page. The `Dashboard` page then requests a temporary authentication token from `/tableau/token` and employs the globally available Tableau Embedding API to dynamically load and display the chosen visualization. Client-side navigation throughout the application is managed by `react-router-dom`.
 
-```mermaid
-graph TD
-User[User] --> Browser[Browser]
-Browser --> LoadIndexHtml[Load Index HTML]
-LoadIndexHtml --> ReactApp[React Application]
-ReactApp --> ClientSideRouting[ClientSideRouting]
-ClientSideRouting --> LoginPage[LoginPage]
-LoginPage --> AuthBackendAPI[AuthBackendAPI]
-AuthBackendAPI --> UserSession[UserSession]
-UserSession --> HomePage[HomePage]
-HomePage --> TableauWorkbooksAPI[TableauWorkbooksAPI]
-HomePage --> TableauViewsAPI[TableauViewsAPI]
-HomePage --> NavigateToDashboard[NavigateToDashboard]
-NavigateToDashboard --> DashboardPage[DashboardPage]
-DashboardPage --> TableauTokenAPI[TableauTokenAPI]
-TableauTokenAPI --> TableauEmbeddingAPI[TableauEmbeddingAPI]
-TableauEmbeddingAPI --> DisplayDashboard[DisplayDashboard]
-```
-
 ### Technology Stack
 *   **Frontend Framework**: React
 *   **Routing**: React Router DOM (`react-router-dom`)
