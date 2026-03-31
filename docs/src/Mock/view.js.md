@@ -4,36 +4,31 @@
 > **Repository:** `tableau-frontend`
 > **Branch:** `main`
 
->>> GENERATED USING CUSTOM USER PROMPT <<<
 # src/Mock/view.js
 
 ### Overview
-This file exports a static JavaScript object named `allViews`, which serves as a mock data source for a collection of "view" entities. It is intended to simulate an API response for a list of views. This documentation was generated using a custom user prompt override.
+This file serves as a static data mock for a collection of "view" objects. It exports a constant JavaScript object, `allViews`, containing an array of predefined view configurations, typically used to simulate API responses during development or testing.
 
 ### Architecture & Role
-Architecturally, this file acts as a local data provider within a mock layer. Its role is to supply predefined data, typically for development, testing, or demonstrating features where a live backend or API endpoint for fetching views is unavailable or undesirable. It prevents direct dependencies on external services during specific development phases.
+This file resides within a `Mock` directory, indicating its role as a mock data provider. Architecturally, it functions as a simulated data layer, offering static data to frontend components without requiring an active backend service or real API calls. It bypasses actual data fetching mechanisms for isolated development and testing environments.
 
 ### Key Components
--   **`allViews`**: A `const` exported object. It contains a `data` property, which in turn holds a `views` array.
-    -   The `views` array consists of multiple objects, each representing a distinct "view" entity.
-    -   Each view object includes properties such as `id`, `name`, `contentUrl`, `viewUrlName`, `owner` (with an `id`), `project` (with an `id`), `location` (with `id` and `type`), `tags`, `createdAt`, and `updatedAt`.
+*   `allViews`: A top-level constant export that holds the entire mock data structure.
+*   `data.views`: An array within `allViews` that contains individual mock view objects.
+*   View Object Structure: Each object in the `views` array represents a single view and includes properties such as `id`, `name`, `contentUrl`, `owner`, `project`, `location`, `tags`, `createdAt`, and `updatedAt`.
 
 ### Execution Flow / Behavior
-This file does not contain executable logic beyond defining and exporting the `allViews` constant. When imported into another module, the `allViews` object becomes directly accessible, allowing consumers to access the predefined static view data. There are no functions or dynamic operations performed within this file.
+As a static data export, this file does not contain any executable logic or dynamic behavior. When imported by another module, the `allViews` object is immediately available for direct access and consumption, providing its predefined data payload.
 
 ### Dependencies
-None significant. This file is self-contained and does not import any external modules or internal project files.
+This file has no explicit internal or external dependencies. It does not import any other modules or libraries, relying solely on standard JavaScript object literal syntax.
 
 ### Design Notes
-The `allViews` object is designed to replicate the structure of a typical API response for a list of views. This approach is beneficial for:
--   **Frontend Development**: Enables independent development and testing of UI components that consume view data without requiring a live backend.
--   **Unit/Integration Testing**: Provides consistent, predictable data for tests, ensuring determinism.
--   **Demonstrations**: Allows for quick setup of application states for demos or local development.
-
-The data within `allViews` is hardcoded, meaning any changes to the simulated view data require direct modification of this file.
+The design provides a clear, self-contained set of mock data. This approach is beneficial for:
+*   Frontend development where backend APIs are not yet stable or available.
+*   Unit and integration testing of components that display lists of views, ensuring consistent data without external dependencies.
+*   Simplifying local development by avoiding the need to connect to a live data source.
+A trade-off is that this static data cannot simulate real-world API behaviors like varying response times, pagination, or error conditions.
 
 ### Diagram
 None significant.
-
-### Custom Note
-This documentation was generated using a USER-DEFINED PROMPT (NOT DEFAULT).
