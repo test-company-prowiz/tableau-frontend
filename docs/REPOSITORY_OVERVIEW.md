@@ -6,18 +6,18 @@ The `tableau-frontend` repository hosts a React-based single-page application. I
 ### Architectural Structure
 The repository follows a Create React App (CRA)-like structure, organizing the application into distinct layers:
 
-*   **Build & Configuration**: At the root, `package.json` manages dependencies and build scripts, while `tailwind.config.js` configures styling.
+*   **Build & Configuration**: Root-level files like `package.json` manage dependencies and build scripts, while `tailwind.config.js` configures styling.
 *   **Public Assets & Entry Point (`public/`)**: Contains the single HTML entry point (`index.html`), `manifest.json` for Progressive Web App (PWA) capabilities, and static assets.
 *   **Application Source (`src/`)**:
     *   **Root Application (`App.jsx`)**: Establishes client-side routing and global API endpoint configuration.
     *   **Page-Level Components (`src/Pages/`)**: Houses feature-specific views such as `Login.jsx`, `Home.jsx`, and `Dashboard.jsx`.
-    *   **Shared Components (`src/Components/`)**: Intended for reusable UI elements, though `Sidenav.jsx` is currently commented out.
+    *   **Shared Components (`src/Components/`)**: Intended for reusable UI elements.
     *   **Styling (`App.css`)**: Contains global application styles and overrides.
-    *   **Mock Data (`src/Mock/`)**: Provides static data for development purposes (`view.js`, `workbooks.js`), though not consistently used in runtime logic.
-    *   **Services (`src/Services/`)**: Designated for API abstraction (`api_service`), but its usage is not fully consistent across components.
+    *   **Mock Data (`src/Mock/`)**: Provides static data for development purposes.
+    *   **Services (`src/Services/`)**: Designated for API abstraction.
 
 ### Core Components
-*   **`package.json`**: The project manifest, defining metadata, runtime and development dependencies, and npm scripts for development, build, and testing.
+*   **`package.json`**: Project manifest defining metadata, runtime/development dependencies, and npm scripts for development, build, and testing.
 *   **`public/index.html`**: The single entry point that bootstraps the React application and pre-loads the Tableau Embedding API.
 *   **`public/manifest.json`**: Provides metadata for PWA features, enabling home screen installation and application-like display.
 *   **`src/App.jsx`**: The root React component responsible for configuring client-side routing via `react-router-dom` and setting the global backend API base URL.
