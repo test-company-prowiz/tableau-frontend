@@ -1,83 +1,86 @@
 # src/Pages/Login.jsx
 
-> **Source File:** [src/Pages/Login.jsx](https://github.com/test-company-prowiz/tableau-frontend/blob/main/src/Pages/Login.jsx)  
-> **Repository:** `tableau-frontend`  
+> **Source File:** [src/Pages/Login.jsx](https://github.com/test-company-prowiz/tableau-frontend/blob/main/src/Pages/Login.jsx)
+> **Repository:** `tableau-frontend`
 > **Branch:** `main`
 
 # src/Pages/Login.jsx
 
 ### Overview
-This file defines the `Login` React component, which provides the user interface and functionality for user authentication. It supports both traditional email/password login and Google OAuth-based login, handling form submission, API requests, and user feedback.
+This file defines the `Login` React functional component, which serves as the primary user authentication interface. It supports both traditional email/password login and Google OAuth-based authentication.
 
 ### Architecture & Role
-Architecturally, this file represents a frontend page-level component within the application's UI layer. It acts as a controller for the login process, managing local state, interacting with user input, and orchestrating calls to the authentication backend. Its primary role is to facilitate user access to the application by authenticating credentials.
+This file represents a UI layer component within a frontend application. It resides in the `Pages` directory, indicating its role as a top-level view or page. Its responsibility is to capture user credentials, orchestrate authentication requests to a backend service, and manage the UI state related to login processes, including navigation and feedback.
 
 ### Key Components
-*   **`Login` function**: The main React functional component responsible for rendering the login page.
-*   **`useState` hooks**:
-    *   `token`: Stores the access token obtained from Google OAuth.
-    *   `creds`: Declared but not utilized in the current component logic.
-    *   `loading`: Boolean state to control the visibility of a loading spinner during API requests.
-    *   `isPassVisible`: Boolean state to control password input visibility.
-*   **`useForm` (from `react-hook-form`)**: Manages form state, validation, and submission for the email/password login form.
-*   **`useNavigate` (from `react-router-dom`)**: Provides programmatic navigation functionality after successful login.
-*   **`useGoogleLogin` (from `@react-oauth/google`)**: Hook to initiate and handle the Google OAuth login flow.
-*   **`onSubmit` function**: Handles the submission of the email/password login form, sending credentials to the backend.
-*   **`registerGoogleSignin` function**: Callback function executed upon successful Google OAuth, sending the obtained access token to the backend.
-*   **`notify`, `successNotify`**: Utility functions for displaying error and success toast notifications using `react-toastify`.
+*   **`Login` (function component)**: The main React component that renders the login form and handles authentication logic.
+*   **`useState` hooks**: Manage component-specific state, including `token` (for Google access token), `creds` (declared but unused), `loading` (for UI spinner), and `isPassVisible` (for password input type toggling).
+*   **`useForm` (from `react-hook-form`)**: Provides functionality for form registration, submission handling, and client-side validation for the email and password fields.
+*   **`useNavigate` (from `react-router-dom`)**: Enables programmatic navigation after successful authentication.
+*   **`googleLogin` (from `@react-oauth/google`)**: Initiates the Google OAuth consent flow.
+*   **`registerGoogleSignin`**: An asynchronous function invoked on successful Google OAuth authorization to send the Google access token to the backend for verification.
+*   **`onSubmit`**: An asynchronous function that handles the submission of the traditional email and password form, sending credentials to the backend.
+*   **`ToastContainer`, `toast` (from `react-toastify`)**: Used for displaying user feedback (success/error notifications).
+*   **`Spin`, `LoadingOutlined` (from `antd`)**: UI components to show a loading indicator during asynchronous operations.
 
 ### Execution Flow / Behavior
-1.  When the `Login` component mounts, it displays a login form for email/password and a button for Google login.
-2.  **Email/Password Login**:
-    *   A user enters an email and password into the form fields.
-    *   Upon form submission, `handleSubmit` triggers the `onSubmit` function.
-    *   `onSubmit` sets `loading` to `true`, makes an `axios.post` request to `${API}/auth/` with the provided credentials.
-    *   If the request is successful (status 200), the user is navigated to the `/home` route, `successNotify` is called, and `loading` is set to `false`.
-    *   If an error occurs, `notify` is called with the error message, and `loading` is set to `false`.
-3.  **Google Login**:
-    *   A user clicks the "Login with Google ID" button, which invokes the `googleLogin` function.
-    *   This initiates the Google OAuth flow, typically redirecting the user to Google for authentication.
-    *   Upon successful authentication, Google redirects back, and the `onSuccess` callback of `useGoogleLogin` is triggered, calling `registerGoogleSignin` with the `codeResponse` payload.
-    *   `registerGoogleSignin` extracts the `access_token` from the payload, sets the `token` state, and makes an `axios.post` request to `${API}/auth/`. This request includes the Google access token in the `Authorization` header.
-    *   If the request is successful (status 200), the user is navigated to the `/home` route, `successNotify` is called, and `loading` is set to `false`.
-    *   If an error occurs during Google login, the `onError` callback logs the error to the console.
-4.  A loading spinner (`Spin` from `antd`) is displayed when the `loading` state is `true`.
-5.  Toast notifications (success/error) are shown using `react-toastify`.
-
-```mermaid
-graph TD
-A[Login Component Rendered] --> B{User Action};
-B -- Email/Password Submit --> C[Call onSubmit];
-C --> D{API Request: POST /auth/};
-D -- Success (Status 200) --> E[Navigate to /home];
-D -- Error --> F[Show Error Toast];
-B -- Google Login Button Click --> G[Initiate Google OAuth];
-G -- Google OAuth Success --> H[Call registerGoogleSignin];
-H --> I{API Request: POST /auth/ with Token};
-I -- Success (Status 200) --> E;
-I -- Error --> J[Show Error Toast];
-E --> K[Show Success Toast];
-K --> L[Login Process Complete];
-F --> L;
-J --> L;
-```
+1.  **Component Rendering**: When the `Login` component mounts, it displays a form with email and password input fields, a "Login with Tableau ID" button (for traditional login), and a "Login with Google ID" button.
+2.  **Traditional Email/Password Login**:
+    *   A user inputs their email and password into the form fields.
+    *   Upon clicking "Login with Tableau ID," the `handleSubmit` function (from `react-hook-form`) validates the input.
+    *   If validation passes, the `onSubmit` function executes:
+        *   The `loading` state is set to `true`, displaying a spinner.
+        *   An `axios.post` request is sent to `${API}/auth/` with `data.email` and `data.password` in the request body.
+        *   The request includes `withCredentials: true`, indicating a reliance on cookie-based session management.
+        *   If the backend responds with HTTP status 200, the user is navigated to `/home`, and a success toast notification appears.
+        *   If the request fails (e.g., due to invalid credentials), an error toast notification displays the error message from the backend.
+        *   The `loading` state is reset to `false`.
+3.  **Google OAuth Login**:
+    *   A user clicks the "Login with Google ID" button, triggering the `googleLogin` function.
+    *   This initiates the external Google OAuth flow.
+    *   Upon successful authorization by Google, the `onSuccess` callback executes `registerGoogleSignin`.
+    *   Inside `registerGoogleSignin`:
+        *   The `loading` state is set to `true`.
+        *   The Google `access_token` is extracted from the payload.
+        *   An `axios.post` request is sent to `${API}/auth/` with an `Authorization` header containing `Bearer ${payload.access_token}`. The request body contains empty `user` and `pwd` fields.
+        *   This request also includes `withCredentials: true`.
+        *   If the backend responds with HTTP status 200, the user is navigated to `/home`, and a success toast notification appears.
+        *   The `loading` state is reset to `false`.
+    *   If the Google login fails, the `onError` callback logs the error to the console.
 
 ### Dependencies
-*   **`axios`**: An HTTP client used for making API requests to the backend authentication endpoint.
-*   **`react`**: The core JavaScript library for building user interfaces.
-*   **`react-hook-form`**: A library for managing form state, validation, and submission, used for the email/password form.
-*   **`react-router-dom`**: Provides routing capabilities, specifically `useNavigate` for redirecting users post-login.
-*   **`react-toastify`**: A library for displaying non-blocking notifications (toasts) to the user.
-*   **`@ant-design/icons`**: Provides Ant Design icons, specifically `LoadingOutlined` for the loading spinner.
-*   **`antd`**: Ant Design UI library, providing the `Spin` component for loading indicators.
-*   **`@react-oauth/google`**: A React hook for integrating Google's OAuth 2.0 authentication.
-*   **`../Services/apiService`**: Imported but not directly used within this file's provided logic.
-*   **`../App`**: Provides the `API` constant, which serves as the base URL for backend API requests.
+*   **`axios`**: For making HTTP requests to the backend API.
+*   **`react`, `useState`**: Core React library for building UI components and managing component state.
+*   **`react-hook-form` (`useForm`)**: For declarative form management and validation.
+*   **`react-router-dom` (`useNavigate`)**: For client-side routing and navigation.
+*   **`react-toastify` (`ToastContainer`, `toast`)**: For displaying transient user notifications.
+*   **`antd` (`Spin`), `@ant-design/icons` (`LoadingOutlined`)**: UI library components for displaying loading indicators.
+*   **`@react-oauth/google` (`useGoogleLogin`)**: For integrating Google OAuth 2.0.
+*   **`../App` (`API`)**: An internal constant providing the base URL for API endpoints.
+*   **`../Services/apiService`**: An internal service import, though `apiService` is not explicitly used within this component's logic.
 
 ### Design Notes
-*   The component integrates two distinct authentication mechanisms: a traditional email/password form and a third-party Google OAuth flow. Both flows ultimately make a POST request to the same `/auth/` backend endpoint.
-*   Form validation for the email/password input fields is handled by `react-hook-form`, ensuring required fields are populated before submission.
-*   User feedback is provided through a loading spinner during API calls and toast notifications for success or error messages.
-*   The `token` state variable is updated after a successful Google OAuth flow but is not explicitly utilized by the email/password submission logic to include authentication headers. The `onSubmit` function for email/password login does not send any `Authorization` header.
-*   The `creds` state variable is declared but appears to be unused within the component's current logic.
-*   API calls are made directly within the component using `axios`, rather than abstracting them through the imported `apiService`, which suggests an area for potential refactoring to centralize API interactions.
+*   The component supports two distinct authentication mechanisms: traditional email/password and external Google OAuth.
+*   Client-side form validation is handled robustly using `react-hook-form`, providing immediate feedback to the user regarding required fields.
+*   User experience is enhanced with visual feedback through a loading spinner (`Spin`) during API calls and toast notifications (`react-toastify`) for login outcomes.
+*   The `creds` state is declared but not utilized in the current implementation.
+*   The `header` object generated within the `onSubmit` function for traditional login is not passed to the `axios.post` request, meaning traditional logins do not send a bearer token, relying solely on `user` and `pwd` in the body and potentially cookies from `withCredentials: true`.
+*   The `apiService` import is present but the `apiService` object is not invoked, suggesting it might be vestigial or intended for future use.
+
+### Diagram 
+```mermaid
+graph TD
+User[User] --> LoginPage[LoginPage];
+LoginPage --> EmailPasswordSubmit[EmailPasswordSubmit];
+EmailPasswordSubmit --> BackendAuthEndpoint[BackendAuthEndpoint];
+
+LoginPage --> GoogleLoginClick[GoogleLoginClick];
+GoogleLoginClick --> GoogleAuthFlow[GoogleAuthFlow];
+GoogleAuthFlow --> BackendAuthEndpoint;
+
+BackendAuthEndpoint --> AuthSuccess[AuthSuccess];
+AuthSuccess --> NavigateToHome[NavigateToHome];
+
+BackendAuthEndpoint --> AuthFailure[AuthFailure];
+AuthFailure --> DisplayError[DisplayError];
+```
