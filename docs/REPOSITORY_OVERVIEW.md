@@ -17,20 +17,22 @@ The repository follows a Create React App (CRA)-like structure, organizing the a
     *   **Services (`src/Services/`)**: Designated for API abstraction, but currently inconsistent in usage.
 
 ### Core Components
-*   **`package.json`**: Project manifest defining metadata, runtime/development dependencies, and npm scripts for development, build, and testing.
-*   **`public/index.html`**: The single entry point that bootstraps the React application and pre-loads the Tableau Embedding API.
+*   **`package.json`**: Defines project metadata, runtime/development dependencies, and npm scripts.
+*   **`public/index.html`**: The single HTML entry point that bootstraps the React application and pre-loads the Tableau Embedding API.
 *   **`public/manifest.json`**: Provides metadata for PWA features, enabling home screen installation and application-like display.
-*   **`src/App.jsx`**: The root React component responsible for configuring client-side routing via `react-router-dom` and setting the global backend API base URL.
-*   **`src/Pages/Login.jsx`**: Manages user authentication, supporting both email/password and Google OAuth, by interacting with the backend `/auth` endpoint.
+*   **`src/App.jsx`**: The root React component configuring client-side routing via `react-router-dom` and setting the global backend API base URL.
+*   **`src/Pages/Login.jsx`**: Manages user authentication, interacting with the backend `/auth` endpoint.
 *   **`src/Pages/Home.jsx`**: Displays a browsable, searchable list of Tableau workbooks and views, fetching data from `/tableau/workbooks` and `/tableau/views`.
 *   **`src/Pages/Dashboard.jsx`**: Embeds specific Tableau visualizations by fetching authentication tokens from `/tableau/token` and utilizing the Tableau Embedding API.
-*   **`tailwind.config.js`**: Configures Tailwind CSS for utility-first styling, specifying content paths and custom theme extensions.
-*   **Axios**: The primary HTTP client used for all backend API interactions.
-*   **React Router DOM**: Manages client-side navigation between different application views.
-*   **Tableau Embedding API**: An external JavaScript library pre-loaded in `index.html` used for embedding and interacting with Tableau visualizations.
+*   **`tailwind.config.js`**: Configures Tailwind CSS for utility-first styling.
+*   **Axios**: The primary HTTP client for backend API interactions.
+*   **React Router DOM**: Manages client-side navigation.
+*   **Tableau Embedding API**: An external JavaScript library pre-loaded in `index.html` for embedding Tableau visualizations.
 
 ### Interaction & Data Flow
-The application flow typically begins with the browser loading `public/index.html`, which then bootstraps the React application. Client-side routing is handled by `react-router-dom`, initially directing users to the `Login` page. Here, users authenticate using either email/password or Google OAuth, sending credentials to a backend `/auth` endpoint via `axios`. Upon successful authentication, the user is redirected to the `Home` page. On the `Home` page, lists of Tableau workbooks and views are fetched from backend endpoints (`/tableau/workbooks`, `/tableau/views`) via `axios`. Users can search and filter these views client-side. Selecting a specific view navigates the user to the `Dashboard` page, passing the view's URL as state. On the `Dashboard` page, a temporary authentication token is requested from the backend's `/tableau/token` endpoint. This token, along with the view's URL, is then used by the client-side Tableau Embedding API (pre-loaded in `index.html`) to dynamically render the chosen Tableau visualization.
+The application flow typically begins with the browser loading `public/index.html`, which then bootstraps the React application. Client-side routing, managed by `react-router-dom`, initially directs users to the `Login` page. Users authenticate using email/password or Google OAuth, sending credentials to a backend `/auth` endpoint via `axios`. Upon successful authentication, the user is redirected to the `Home` page.
+
+On the `Home` page, lists of Tableau workbooks and views are fetched from backend endpoints (`/tableau/workbooks`, `/tableau/views`) via `axios`. Users can search and filter these views client-side. Selecting a specific view navigates the user to the `Dashboard` page, passing the view's URL as state. On the `Dashboard` page, a temporary authentication token is requested from the backend's `/tableau/token` endpoint. This token, along with the view's URL, is then used by the client-side Tableau Embedding API (pre-loaded in `index.html`) to dynamically render the chosen Tableau visualization.
 
 ### Technology Stack
 *   **Frontend Framework**: React (`react`, `react-dom`)
