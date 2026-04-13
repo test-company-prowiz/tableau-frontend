@@ -1,44 +1,42 @@
 # src/Components/Sidenav.jsx
 
-> **Source File:** [src/Components/Sidenav.jsx](https://github.com/test-company-prowiz/tableau-frontend/blob/main/src/Components/Sidenav.jsx)  
-> **Repository:** `tableau-frontend`  
+> **Source File:** [src/Components/Sidenav.jsx](https://github.com/test-company-prowiz/tableau-frontend/blob/main/src/Components/Sidenav.jsx)
+> **Repository:** `tableau-frontend`
 > **Branch:** `main`
 
 # src/Components/Sidenav.jsx
 
 ### Overview
-This file contains commented-out React code that defines a `Sidenav` functional component. If active, this component would render a fixed-width sidebar navigation menu designed for application-wide access to different sections.
+This file contains a commented-out React component designed to render a fixed-width sidebar navigation for a web application. Its purpose is to display a list of navigation links, manage their active states based on the current URL, and provide a consistent navigation experience.
 
 ### Architecture & Role
-Currently, this file does not contribute to the active application architecture as its content is commented out. If uncommented, it would function as a presentational component within the UI layer, specifically for global navigation, and would be imported and rendered by a higher-order layout component.
+This component functions as a presentational UI element within the client-side application. It is intended to reside in the presentation layer, typically integrated into a main layout or dashboard component to provide global navigation. Its architecture is self-contained as a functional React component.
 
 ### Key Components
-- **`Sidenav` functional component**: If active, it would define and export a React functional component. It accepts a `children` prop, though the current commented implementation does not render it.
-- **`sideMenu` state**: An array managed by `useState` that defines the structure and paths for the main navigation items.
-- **`NavLink`**: If active, `react-router-dom`'s `NavLink` component would be used to create navigational links that handle client-side routing.
-- **`useLocation` hook**: If active, this `react-router-dom` hook would provide access to the current URL path for dynamic styling based on the active route.
+*   `Sidenav` (functional component): The primary export, responsible for rendering the entire sidebar structure and its navigation items.
+*   `sideMenu` (state): A React state variable initialized with an array of objects. Each object represents a navigation link, defining its `path` and `name`.
+*   `NavLink`: A component from `react-router-dom` used to create declarative navigation links that automatically apply an active class when the target route matches the current URL.
+*   `useLocation`: A hook from `react-router-dom` used to access the current URL's location object, enabling conditional rendering or styling based on the active route.
 
 ### Execution Flow / Behavior
-The code in this file is entirely commented out and therefore does not execute at runtime. If uncommented, the `Sidenav` component would:
-1. Initialize a `sideMenu` state with an array of navigation objects, each containing a `path` and a `name`.
-2. Utilize the `useLocation` hook to obtain the current URL pathname.
-3. Render a static structural `div` element acting as the sidebar, applying specific width, height, background, and border styles.
-4. Display a fixed title "Qadence by TQG".
-5. Iterate over the `sideMenu` array to dynamically render `NavLink` components for each item.
-6. Apply a conditional `className` to the `NavLink` elements based on regex patterns matching the `location.pathname` for specific routes (`/event-logs/` or `/camera-view/`), potentially overriding standard `NavLink` active styling.
-7. Include commented-out logic for rendering submenus (`item.submenu`), although the `NavLink` wrapping for sub-items is also commented out.
+1.  When the `Sidenav` component is rendered (if uncommented), it initializes its internal `sideMenu` state with a predefined set of navigation items.
+2.  It then uses the `useLocation` hook to obtain the current browser URL path.
+3.  The component iterates through the `sideMenu` array. For each item, it renders a `NavLink` component.
+4.  Each `NavLink` is configured with a `to` prop corresponding to the item's `path` and displays the item's `name`. It also includes a placeholder for `item.icon`, although the initial `sideMenu` state does not define icons.
+5.  Styling for active/inactive links is managed through dynamic `className` logic:
+    *   It applies a `not-active` class if the current `location.pathname` matches specific regex patterns (`/event-logs/` or `/camera-view/`).
+    *   It explicitly sets `activeclassName="not-active"`, which would apply this class when the link's `to` prop matches the current route.
+6.  The component includes commented-out logic for rendering nested `submenu` items, though the initial `sideMenu` state does not contain submenu data.
 
 ### Dependencies
-The code, if uncommented, would have the following dependencies:
-- **`react`**: Specifically for the `useState` hook to manage component state. `useEffect` is imported but not used in the provided snippet.
-- **`react-router-dom`**: For client-side routing capabilities, including `NavLink` for navigation links and `useLocation` for accessing route information.
+*   `react`: Provides core React functionality, including component definition (`function Sidenav`) and state management (`useState`).
+*   `react-router-dom`: Essential for client-side routing, specifically `NavLink` for navigation links and `useLocation` for accessing route information.
 
 ### Design Notes
-- The entire file content is currently commented out, rendering it inactive within the application.
-- If active, the `sideMenu` is hardcoded within the component's state, limiting dynamic configuration without component modification.
-- The logic for applying `className` to `NavLink` (`activeclassName="not-active"` and conditional regex matching) deviates from standard `react-router-dom` practices, suggesting a custom approach to styling active links, potentially to explicitly deactivate them under certain URL patterns.
-- The `submenu` rendering logic is present but incomplete, with `NavLink` components commented out for sub-items, indicating either ongoing development or a paused feature.
-- The `children` prop is declared but not utilized within the component's render method, suggesting it might be intended for future extensibility to inject content into the sidebar.
+*   The entire file is currently commented out, indicating that this sidebar component is not actively in use within the application's current build. It represents either a historical implementation, a work-in-progress, or a placeholder for future functionality.
+*   The navigation menu items are initially hardcoded within the `sideMenu` state. While `useState` allows for dynamic updates, the current structure suggests a static sidebar configuration.
+*   The `NavLink` `className` logic, particularly the use of `activeclassName="not-active"` in conjunction with conditional `not-active` classes based on other route patterns, suggests a potentially inverted or custom approach to styling active links that might require clarification or refactoring if this component were to be reactivated.
+*   The presence of submenu rendering logic, despite `sideMenu` not containing `submenu` data, implies an intention to support multi-level navigation which was not fully realized or integrated.
 
 ### Diagram
 None significant.
