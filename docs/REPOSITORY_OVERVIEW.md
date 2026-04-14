@@ -11,10 +11,10 @@ The repository follows a Create React App (CRA)-like structure, organizing the a
 *   **Application Source (`src/`)**:
     *   **Root Application (`App.jsx`)**: Establishes client-side routing and global API endpoint configuration.
     *   **Page-Level Components (`src/Pages/`)**: Houses feature-specific views such as `Login.jsx`, `Home.jsx`, and `Dashboard.jsx`.
-    *   **Shared Components (`src/Components/`)**: Intended for reusable UI elements, though `Sidenav.jsx` is currently commented out.
+    *   **Shared Components (`src/Components/`)**: Intended for reusable UI elements.
     *   **Styling (`App.css`)**: Contains global application styles and overrides.
     *   **Mock Data (`src/Mock/`)**: Provides static data for development purposes.
-    *   **Services (`src/Services/`)**: Designated for API abstraction, but currently inconsistent in usage.
+    *   **Services (`src/Services/`)**: Designated for API abstraction.
 
 ### Core Components
 *   **`package.json`**: Defines project metadata, runtime/development dependencies, and npm scripts.
@@ -66,14 +66,14 @@ The application uses standard React patterns within a Create React App-like setu
 ```mermaid
 graph TD
 User[User] --> Browser[Browser]
-Browser --> LoadIndexHtml[Load Index HTML]
-LoadIndexHtml --> ReactApplication[React Application]
+Browser --> LoadIndexHtml[LoadIndexHtml]
+LoadIndexHtml --> ReactApplication[ReactApplication]
 ReactApplication --> LoginPage[LoginPage]
-LoginPage --> AuthBackendAPI[AuthBackend API]
-AuthBackendAPI --> HomePage[Home Page]
-HomePage --> TableauWorkbooksViewsAPI[Tableau Workbooks/Views API]
-HomePage --> DashboardPage[Dashboard Page]
-DashboardPage --> TableauTokenAPI[Tableau Token API]
-TableauTokenAPI --> TableauEmbeddingAPI[Tableau Embedding API]
-TableauEmbeddingAPI --> TableauDashboardViz[Tableau Dashboard Viz]
+LoginPage --> AuthBackendAPI[AuthBackendAPI]
+AuthBackendAPI --> HomePage[HomePage]
+HomePage --> TableauWorkbooksViewsAPI[TableauWorkbooksViewsAPI]
+HomePage --> DashboardPage[DashboardPage]
+DashboardPage --> TableauTokenAPI[TableauTokenAPI]
+TableauTokenAPI --> TableauEmbeddingAPI[TableauEmbeddingAPI]
+TableauEmbeddingAPI --> TableauDashboardViz[TableauDashboardViz]
 ```
