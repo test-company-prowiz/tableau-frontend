@@ -1,44 +1,52 @@
 # tableau-frontend — Repository Overview
 
 ### High-Level Purpose
-The `tableau-frontend` repository hosts a React-based single-page application designed to provide a user interface for displaying data and interactive dashboards. Its primary objective is to render authenticated views, likely involving data visualizations or reports, accessible via client-side routing.
+The `tableau-frontend` repository hosts a React-based single-page application designed to provide a user interface for displaying data and interactive dashboards, primarily integrating with Tableau visualizations. Its core objective is to render authenticated views, allowing users to browse and interact with Tableau workbooks and views.
 
 ### Architectural Structure
-The architecture is structured as a client-side React application. The `App.jsx` file serves as the application's entry point, defining global routing and initializing the UI. Routing is managed by `react-router-dom`, with a top-level router delegating to a nested router (`Main` component) for authenticated user flows. Core application views (e.g., `Login`, `Home`, `Dashboard`) are organized into a `Pages` directory, and reusable UI elements are expected in a `Components` directory. Global and component-specific styles, including overrides for third-party libraries, are defined in `App.css`.
+The application follows a client-side React single-page application (SPA) architecture. `src/App.jsx` serves as the root component, handling global client-side routing using `react-router-dom`. Routing is structured into a top-level `BrowserRouter` that directs traffic to a `Login` page for unauthenticated users and a `Main` component for authenticated users. The `Main` component then manages nested routes for core application pages like `Home` and `Dashboard`. UI components are organized within a `Components` directory (e.g., `Sidenav`), while primary page views reside in `Pages`. Styling is managed through `src/App.css` for global styles and overrides, alongside extensive use of Tailwind CSS classes for component-level styling. Mock data for development is located in the `Mock` directory.
 
 ### Core Components
-*   **`App` Component:** The root React component managing the overall application lifecycle and top-level routing.
-*   **`Main` Component:** A nested component responsible for routes requiring authentication and rendering core application pages.
-*   **`Login` Page:** Handles user authentication.
-*   **`Home` and `Dashboard` Pages:** Primary content display areas for authenticated users.
-*   **`Sidenav` Component:** Provides primary navigation links.
-*   **`API` Constant:** Defines the base URL for backend API interactions.
-*   **`slick-carousel`:** A third-party UI component for displaying content, with customized styling from `App.css`.
-*   **Loading Indicators:** UI elements for indicating ongoing background processes, styled via `App.css`.
-*   **`allViews` Mock Data:** Static data simulating dashboard view listings, used for development.
+*   **`App` Component**: The application's entry point, defining top-level routing and layout.
+*   **`Main` Component**: Handles authentication state and renders protected routes (e.g., `/home`, `/dashboard`).
+*   **`Login` Page**: Component for user authentication.
+*   **`Home` Page**: Displays lists of workbooks and views, handles search, and navigates to dashboards.
+*   **`Dashboard` Page**: Renders embedded Tableau visualizations, manages Tableau token acquisition and injection.
+*   **`Sidenav` Component**: Intended for sidebar navigation, though currently commented out.
+*   **`react-router-dom`**: Core library for client-side routing.
+*   **`axios`**: HTTP client for backend API interactions.
+*   **`react-slick` / `slick-carousel`**: UI component for displaying image carousels (e.g., for workbooks).
+*   **`antd` (Ant Design)**: UI library providing components like `Input`, `Skeleton`, and `Spin` for enhanced UI/UX.
+*   **`API` Constant**: Centralized base URL for backend API endpoints.
+*   **Mock Data (`allViews`, `allWorkBooks`)**: Static data providers for decoupled frontend development.
 
 ### Interaction & Data Flow
-The application initiates with a `BrowserRouter` that directs traffic. Unauthenticated users are routed to the `Login` page. Upon conceptual authentication (currently hardcoded as true within `Main`), users are directed to the `Main` component, which then handles navigation to specific authenticated views like `/home` or `/dashboard` using nested `react-router-dom` routes. UI elements and data presentation are styled by CSS rules from `App.css`. Backend interactions are anticipated through an `api_service` module, interfacing with an AWS API Gateway endpoint defined by the `API` constant. Mock data from `src/Mock/view.js` can be used to simulate backend responses for view listings.
+User interaction begins with the `BrowserRouter` routing requests. Unauthenticated users are directed to the `Login` page. Upon (currently hardcoded) authentication, the `Main` component handles navigation to authenticated routes. The `Home` page fetches workbook and view data from the backend API, displays them, and allows users to search or navigate to specific dashboards. The `Dashboard` page then fetches a secure Tableau token from the backend, which is used to construct and inject a `<tableau-viz>` web component into the DOM, displaying the selected visualization. Logout functionality clears the session cookie and redirects to the login page.
 
 ### Technology Stack
 *   **Frontend Framework:** React
 *   **Routing Library:** `react-router-dom`
-*   **Styling:** CSS
-*   **UI Libraries:** `slick-carousel`
-*   **Backend Interaction:** AWS API Gateway (implied by the API endpoint URL)
+*   **State Management:** React `useState`, `useEffect`
+*   **Styling:** CSS (`src/App.css`), Tailwind CSS
+*   **UI Libraries:** `react-slick`, `antd` (Ant Design), `react-icons`
+*   **HTTP Client:** `axios`
+*   **Backend Interaction:** AWS API Gateway (implied by API endpoint structure), Tableau API (implied by token fetching and embed strategy).
 
 ### Design Observations
-The application uses a clear separation of routing concerns, with a root router for general access and a nested router for authenticated content. The inclusion of a hardcoded `isUserLoggedIn` state and commented-out authentication logic suggests an iterative development approach, allowing frontend development to proceed without a fully integrated backend authentication system. Custom styling for a `slick-carousel` indicates specific UI/UX requirements for content presentation. The use of `!important` flags in `App.css` for certain styles may point to potential CSS specificity conflicts or a need for refactoring. The architecture anticipates integration with an AWS-based backend through API Gateway. The `Sidenav` component is developed and imported but not currently rendered within the primary application layout, indicating an incomplete integration or a planned future feature. The presence of mock data (`src/Mock/view.js`) facilitates decoupled frontend development by providing static data for UI components independently of a live backend.
+The application demonstrates a clear separation of concerns for routing (public vs. protected routes) and uses mock data to facilitate decoupled frontend development. The authentication flow appears to be in an iterative stage, with a hardcoded `isUserLoggedIn` state allowing frontend work to proceed without full backend integration. Client-side caching for Tableau authentication tokens improves performance on the `Dashboard` page. The direct manipulation of the DOM for embedding Tableau web components is a common pattern for integrating third-party visualization libraries. Extensive use of `!important` in `App.css` and a combination of `activeclassName` and custom regex-based `className` for navigation links may indicate potential CSS specificity challenges or areas for refactoring. The `Sidenav` component is currently unrendered and fully commented out, suggesting an incomplete or future feature integration.
 
 ### System Diagram
 ```mermaid
 graph TD
 BrowserRequest[Browser Request] --> ReactApp[React Application]
 ReactApp --> Router[react-router-dom]
-Router --> LoginPage[Login Page]
-Router --> AuthenticatedRoutes[Main Component]
-AuthenticatedRoutes --> HomePage[Home Page]
-AuthenticatedRoutes --> DashboardPage[Dashboard Page]
-ReactApp --> BackendAPI[AWS API Gateway]
-ReactApp --> CSSStyling[CSS Styling]
+Router --> Login[Login Page]
+Router --> MainComponent[Main Component Authenticated]
+MainComponent --> Home[Home Page]
+MainComponent --> Dashboard[Dashboard Page]
+Home --> APIBackend[Backend API]
+Dashboard --> APIBackend
+APIBackend --> TableauService[Tableau Service]
+Home --> MockData[Mock Data]
+ReactApp --> Styling[CSS Styling]
 ```
