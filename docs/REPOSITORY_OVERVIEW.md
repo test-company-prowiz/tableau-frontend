@@ -1,29 +1,24 @@
 # tableau-frontend — Repository Overview
 
 ### High-Level Purpose
-This repository provides the frontend application for interacting with or displaying content related to Tableau workbooks. Its primary objective is to render a user interface that presents dynamic data, potentially including carousels of content and dedicated sections for workbooks, while managing loading states.
+The `tableau-frontend` repository appears to host the user interface for a system focused on managing "Workbooks" and "Views," suggesting a domain related to data visualization, business intelligence, or reporting. The product is identified as "Qadence by TQG."
 
 ### Architectural Structure
-The repository follows a client-side web application architecture, with styles defined in `src/App.css` indicating a component-based UI framework (likely React, given the `react-slick` dependency). The styling targets a main application component (`.App`) and various UI elements, suggesting a standard frontend project structure.
+The repository follows a component-based frontend architecture, indicated by the presence of a `src/Components` directory. This structure implies a modular approach to UI development, where individual features or UI elements are encapsulated as reusable components.
 
 ### Core Components
-Based on the provided styling, the core components primarily exist within the presentation layer:
-*   **Main Application Layout**: Defined by the `.App` container, establishing the overall structure.
-*   **Carousel Component**: Customizations for `react-slick` indicate a prominent carousel element for displaying content.
-*   **Loading Indicators**: Specific styles for `.spinning_indicator` classes manage visual feedback during asynchronous operations.
-*   **Workbook Section**: A dedicated `.workbooks` container suggests a primary area for displaying Tableau-related content.
+-   **Sidenav**: A primary navigation component, intended to provide global application navigation to sections such as "Workbooks" and "Views." While currently inactive (commented out), its design indicates a foundational role in user interaction and application structure.
 
 ### Interaction & Data Flow
-The `App.css` file primarily dictates visual presentation. At a high level, the application likely involves user interaction with UI elements, triggering data fetches. During these operations, loading indicators are displayed. Once data is retrieved, it populates components like the carousel or the workbooks section, with styles from `App.css` ensuring consistent visual rendering.
+User interaction, as inferred from the `Sidenav` component, centers on client-side routing using `react-router-dom`. Users navigate between different application sections via `NavLink` elements. The `Sidenav` itself primarily serves as a presentation layer for navigation, without direct involvement in complex data fetching or manipulation.
 
 ### Technology Stack
-*   **Styling**: CSS, as evidenced by `src/App.css`.
-*   **UI Library**: `react-slick` for carousel functionality, implying the use of React as the primary JavaScript framework.
+-   **Frontend Framework**: React
+-   **Routing**: React Router DOM
+-   **Styling**: Tailwind CSS
 
 ### Design Observations
-*   **Third-Party Customization**: There is a clear emphasis on extensively customizing third-party UI libraries (e.g., `react-slick`) to align with the application's specific design language.
-*   **User Experience for Loading**: Explicit styling for loading indicators demonstrates consideration for user experience during data retrieval or processing.
-*   **Specificity Management**: The use of `!important` in certain CSS rules suggests a strategy for overriding styles, which can be effective but requires careful management to avoid specificity conflicts in larger stylesheets.
+A notable observation is that the core `Sidenav` component is entirely commented out. This suggests it is either a work in progress, temporarily disabled, or deprecated, which would significantly impact the application's current navigation capabilities. The component utilizes inline Tailwind CSS for styling, and conditional `NavLink` styling employs regular expressions, which could present maintenance challenges as the application scales. An incomplete `submenu` feature indicates potential future expansion for nested navigation.
 
 ### System Diagram
 None significant.
