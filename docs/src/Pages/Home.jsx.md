@@ -7,74 +7,60 @@
 # src/Pages/Home.jsx
 
 ### Overview
-This file implements the primary landing page (`/home`) for the application. It displays a list of Tableau workbooks in a carousel and a list of Tableau views, allowing users to search and navigate to specific dashboards.
+This file implements the `Home` React component, which serves as the main landing page for users. It displays a list of Tableau workbooks in a carousel and a list of Tableau views. Users can browse workbooks, filter views by search, and navigate to a detailed dashboard for a selected view. It also provides a logout mechanism.
 
 ### Architecture & Role
-This component operates at the presentation layer of the frontend. It is a React page component responsible for fetching data from the backend API, managing local state for UI elements (loading, search input, data sets), and orchestrating user interactions such as navigation, filtering, and logout.
+The `Home` component operates within the client-side presentation layer of the application. It is a top-level page component responsible for orchestrating UI display, user interaction, and data fetching from the backend API. It acts as a client-side orchestrator, consuming data from the `/tableau` API endpoints and rendering it using various UI components.
 
 ### Key Components
-*   **`Home` Function Component**: The main React component rendering the home page content. It manages all state, data fetching, and rendering logic.
-*   **`SamplePrevArrow` / `SampleNextArrow`**: Functional components used as custom navigation arrows for the `react-slick` carousel.
-*   **`inputSearch` (state)**: Stores the current value of the view search input.
-*   **`loading` (state)**: Boolean flag indicating if initial workbook and view data is being fetched.
-*   **`viewsLoading` (state)**: Boolean flag indicating if views are being fetched (e.g., after clicking a workbook or "All Views").
-*   **`views` (state)**: Stores the list of all fetched Tableau views.
-*   **`filteredViews` (state)**: Stores the list of views after applying search filters.
-*   **`workbooks` (state)**: Stores the list of all fetched Tableau workbooks.
-*   **`sliderSettings`**: Configuration object for the `react-slick` carousel, defining its behavior and appearance.
-*   **`fetchViews(id)`**: Asynchronous function to fetch views associated with a specific workbook ID.
-*   **`onSearch(e)`**: Handles changes in the search input, filtering `views` based on `contentUrl`.
-*   **`fetchAllViews()`**: Asynchronous function to refetch all available views.
-*   **`fetchAllData()`**: Asynchronous function executed on component mount to fetch both workbooks and all views initially.
+*   **`Home` Function Component**: The primary React functional component managing the page's state, data fetching logic, and rendering of workbooks and views.
+*   **`SamplePrevArrow` / `SampleNextArrow`**: Custom functional components used by `react-slick` to render navigation arrows for the workbook carousel.
+*   **`useState` Hooks**: Manage component state for search input (`inputSearch`), loading indicators (`loading`, `viewsLoading`), fetched views (`views`, `filteredViews`), and workbooks (`workbooks`).
+*   **`useEffect` Hook**: Triggers initial data fetching (`fetchAllData`) upon component mount.
+*   **`useNavigate` Hook**: Provides programmatic navigation to other routes, such as the dashboard or the root path.
+*   **`fetchViews(id)`**: Asynchronously fetches views associated with a specific workbook ID from the backend.
+*   **`onSearch(e)`**: Filters the currently displayed views based on user input in the search bar.
+*   **`fetchAllViews()`**: Asynchronously fetches all available views from the backend, typically used to reset the view list after filtering by workbook.
+*   **`fetchAllData()`**: Fetches both all workbooks and all views concurrently during initial page load.
+*   **`sliderSettings`**: Configuration object for the `react-slick` carousel, defining behavior like number of slides shown, autoplay, and custom arrows.
+*   **External UI Libraries**: `react-slick` for the carousel, `antd` (Input, Skeleton, Space, Spin) for form elements, loading states, and layout, and `react-icons` for graphical icons.
 
 ### Execution Flow / Behavior
-1.  **Initialization**: Upon mounting, the `useEffect` hook calls `fetchAllData()`.
-2.  **Initial Data Fetch**: `fetchAllData()` makes concurrent `axios.get` requests to the `API/tableau/workbooks` and `API/tableau/views` endpoints. While fetching, the `loading` state is true, displaying skeleton loaders.
-3.  **Workbook Display**: Once `workbooks` data is received, it populates a `react-slick` carousel. Each workbook item, when clicked, triggers `fetchViews(item.id)`.
-4.  **View Display**: The `views` data is displayed below the workbooks.
-5.  **Workbook-specific Views**: `fetchViews(id)` fetches views pertinent to the selected workbook ID. The `viewsLoading` state is true during this operation, showing a spinner.
-6.  **Searching Views**: Users can type into the "Search For Views Here" input. The `onSearch` handler updates `inputSearch` and `filteredViews` by filtering the `views` state based on `contentUrl`.
-7.  **"All Views" Functionality**: Clicking the "All Views" button triggers `fetchAllViews()`, which fetches all views again, clearing any previous workbook-specific view context.
-8.  **Dashboard Navigation**: Clicking on a specific view name navigates the user to the `/dashboard` route, passing the `item.contentUrl` as state.
-9.  **Logout**: The "Logout" button clears the `session` cookie by setting its expiration date to the past and then navigates the user back to the root (`/`).
+1.  **Initial Load**: When the `Home` component mounts, the `useEffect` hook triggers `fetchAllData()`.
+2.  **Data Fetching**: `fetchAllData()` makes concurrent `axios` GET requests to `/tableau/views` and `/tableau/workbooks` endpoints on the backend API. During this process, a `loading` state is active, displaying skeleton loaders for both workbooks and views.
+3.  **Workbook Display**: Once workbooks are fetched, they are rendered within a `react-slick` carousel. Each workbook item is clickable.
+4.  **View Display**: After views are fetched, they are listed below the workbooks. Initially, all views are shown.
+5.  **Workbook Interaction**: Clicking a workbook item triggers `fetchViews(item.id)`, fetching only the views associated with that specific workbook. The `viewsLoading` state activates, showing a spinner.
+6.  **View Filtering**: Users can type into the search input. The `onSearch` handler filters the `views` array by matching `contentUrl` against the input, updating `filteredViews`.
+7.  **Reset Views**: Clicking the "All Views" button calls `fetchAllViews()`, refetching all views from the backend and resetting any previous workbook-specific or search filters.
+8.  **Navigation to Dashboard**: Clicking on a listed view navigates the user to the `/dashboard` route, passing the view's `contentUrl` as state to the new route.
+9.  **Logout**: Clicking the "Logout" text clears the session cookie and navigates the user to the root path (`/`).
 
 ### Dependencies
-*   **`react`**: Core library for building UI components.
-*   **`react-slick`**: A carousel component for displaying workbooks in a slider.
-*   **`slick-carousel/slick/slick.css`, `slick-carousel/slick/slick-theme.css`**: Styling for the `react-slick` carousel.
-*   **`react-icons/ai`**: Provides arrow icons (`AiOutlineArrowLeft`, `AiOutlineArrowRight`) for slider navigation.
-*   **`react-icons/fa`**: Provides the search icon (`FaSearch`) for the input field.
-*   **`axios`**: HTTP client for making API requests to the backend, especially for Tableau data.
-*   **`react-router-dom`**: For declarative navigation (`useNavigate`, `Link`).
-*   **`antd`**: Ant Design UI library, providing components like `Input`, `Skeleton`, `Space`, and `Spin` for loading indicators.
-*   **`@ant-design/icons`**: Provides `LoadingOutlined` for the spinning indicator.
-*   **`../App`**: Imports the `API` constant, which is the base URL for backend API calls.
-*   **`../Mock/workbooks`, `../Mock/view`**: These files are imported but not actively used within the provided component logic.
+*   **`react`**: Core library for building the user interface.
+*   **`react-slick`**: For implementing the responsive carousel display of workbooks.
+*   **`slick-carousel/slick/slick.css` & `slick-carousel/slick/slick-theme.css`**: Styling for the `react-slick` carousel.
+*   **`react-icons/ai`**: Provides `AiOutlineArrowLeft` and `AiOutlineArrowRight` for carousel navigation.
+*   **`axios`**: HTTP client for making API requests to the backend server.
+*   **`react-router-dom`**: Provides `Link` and `useNavigate` for client-side routing.
+*   **`antd`**: Ant Design UI library for components like `Input`, `Skeleton`, `Space`, `Spin`, and `LoadingOutlined`.
+*   **`../App`**: Imports the `API` constant, which defines the base URL for backend API calls.
+*   **`../Mock/workbooks` & `../Mock/view`**: Imports mock data, although these are not actively used in the current `axios`-based data fetching logic. They may represent previous development stages or fallback data.
+*   **`react-icons/fa`**: Provides `FaSearch` icon for the search input.
 
 ### Design Notes
-*   The component effectively manages multiple loading states (`loading` for initial data, `viewsLoading` for view-specific fetches) to provide a responsive user experience with skeleton loaders and spinners.
-*   Client-side filtering is implemented for views, which is suitable for smaller datasets but might become inefficient with very large numbers of views.
-*   The `fetchAllViews` and `fetchAllData` functions both fetch all views. There's a slight redundancy where `fetchAllData` already gets all views on initial load, and `fetchAllViews` can be called later. This could potentially be refactored for clarity or to avoid duplicate fetches if `views` state could be directly reused.
-*   Logout is handled by directly manipulating `document.cookie`, which is a valid but less abstracted approach than using a dedicated authentication context or service.
+*   The component uses a combination of `useState` and `useEffect` for effective state management and side effects, following React functional component best practices.
+*   Loading states (`loading`, `viewsLoading`) are explicitly handled with Ant Design `Skeleton` and `Spin` components, providing a better user experience during data fetching.
+*   The use of `axios` with `withCredentials: true` indicates that the application relies on cookie-based authentication or session management with the backend.
+*   Client-side filtering for views (`onSearch`) is efficient for already loaded data but might not scale for very large datasets without server-side search capabilities.
+*   The `API` constant is imported from `../App`, centralizing the backend endpoint configuration.
+*   The presence of `../Mock/workbooks` and `../Mock/view` imports, despite not being used in the current data fetching logic, suggests that the component might have previously used mock data or these imports are remnants. This could be cleaned up or leveraged for development/testing environments.
+*   Logout functionality directly manipulates `document.cookie`, which is a common but direct method for clearing client-side session data.
 
 ### Diagram
 ```mermaid
 graph TD
-User[User Interaction] --> HomePage[Home Component]
-HomePage --> FetchInitialData[Fetch Initial Data]
-FetchInitialData --> BackendAPI[Backend API]
-BackendAPI --> HomePage
-HomePage --> DisplayWorkbooks[Display Workbooks Slider]
-HomePage --> DisplayViews[Display Views List]
-User --> ClickWorkbook[Click Workbook]
-ClickWorkbook --> FetchWorkbookViews[Fetch Workbook Views]
-FetchWorkbookViews --> BackendAPI
-BackendAPI --> HomePage
-User --> SearchInput[Enter Search Query]
-SearchInput --> FilterViewsLocally[Filter Views Locally]
-User --> ClickView[Click View Item]
-ClickView --> NavigateDashboard[Navigate to Dashboard]
-User --> ClickLogout[Click Logout]
-ClickLogout --> ClearSessionCookie[Clear Session Cookie]
-ClearSessionCookie --> NavigateRoot[Navigate to /]
+HomeComponent[Home Component] --> BackendAPI[Backend API]
+HomeComponent --> DashboardRoute[Dashboard Route]
+HomeComponent --> RootRoute[Root Route]
 ```
