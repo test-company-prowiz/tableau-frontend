@@ -7,38 +7,33 @@
 # tableau-frontend — Repository Overview
 
 ### High-Level Purpose
-The `tableau-frontend` repository likely hosts a client-side application designed to interact with a backend system that manages or exposes data related to Tableau views and workbooks. Its primary objective is to provide a user interface for accessing, displaying, and potentially modifying this Tableau-related information, including user authentication.
+The repository appears to host a frontend application designed to interact with and display data related to "workbooks." Its primary objective is likely to provide a user interface for browsing, viewing, and potentially managing these workbooks, as indicated by the mock data structure.
 
 ### Architectural Structure
-The repository follows a client-server architectural pattern. The provided file summary indicates a `Services` layer within the frontend application, responsible for abstracting API interactions. This suggests a modular structure where concerns like data fetching are separated from UI components.
+The presence of `src/Mock/workbooks.js` suggests a standard frontend project structure:
+-   A `src` directory for all source code.
+-   A `Mock` subdirectory within `src` specifically for static or simulated data, used during development or testing.
 
 ### Core Components
-*   **API Service Layer**: Provides an abstract interface (`ApiService`) for all backend interactions, with concrete implementations for `Backend` (real API calls) and `Mock` (simulated data). This layer handles authentication and data retrieval.
-*   **HTTP Client**: Utilizes `axios` for making actual HTTP requests to the backend.
-*   **Authentication Mechanism**: Relies on HTTP session cookies for managing user login and logout states.
-*   **Data Models**: Implied models for "views" and "workbooks" which are fetched from the backend or mock data.
+Based on the provided file, a central data entity is the "workbook." The application likely features:
+-   **Workbook Data Model**: Represented by the structure in `allWorkBooks`, containing properties such as `id`, `name`, `project`, `owner`, `contentUrl`, and `webpageUrl`.
+-   **Mock Data Provider**: The `src/Mock/workbooks.js` file itself, which supplies simulated workbook data for development and testing.
 
 ### Interaction & Data Flow
-The frontend application initiates requests through the `apiService` instance. This instance, typically configured to use the `Backend` implementation, leverages `axios` to send HTTP requests to an external API gateway. These requests include user authentication (login/logout) and data retrieval (e.g., Tableau views, workbooks). The backend processes these requests and returns data or status codes, which are then handled by the frontend.
+At a high level, the application's runtime interaction model involves:
+1.  **Data Consumption**: Frontend components consume workbook data.
+2.  **Data Source (Development/Test)**: During development or testing, components retrieve workbook data from the `Mock` data sources (e.g., `allWorkBooks`).
+3.  **Data Source (Production)**: In a production environment, this mock data would typically be replaced by actual API calls to a backend service that provides workbook information.
 
 ### Technology Stack
-*   **Client-Side Language**: JavaScript.
-*   **HTTP Client**: `axios`.
-*   **Authentication**: Session-based (HTTP cookies).
-*   **Backend Interaction**: Via an external API Gateway, potentially hosted on AWS.
+-   **Language**: JavaScript (inferred from `.js` file extension).
+-   **Runtime**: Client-side (browser-based) frontend application.
+No specific frameworks or build tools are inferable from the provided file summary.
 
 ### Design Observations
-*   **Strategy Pattern**: The `ApiService` design allows for flexible switching between real backend integration and mock data, beneficial for development and testing.
-*   **Session-based Authentication**: The reliance on `withCredentials:true` for `axios` calls indicates a dependency on HTTP cookies for maintaining user sessions.
-*   **Inconsistent Error Handling**: While login errors are structured, generic `GET` request errors are primarily logged to the console, suggesting a potential area for improvement in comprehensive error propagation.
-*   **Tableau Integration Focus**: The specific mock data endpoints for `/tableau/views/` and `/tableau/workbooks/` strongly suggest the application's core function revolves around interacting with or presenting data from a Tableau environment.
+-   **Decoupled Development**: The use of a dedicated `Mock` directory and static data (like `allWorkBooks`) facilitates independent frontend development, allowing UI components to be built and tested without a fully functional backend API.
+-   **Testability**: Provides predictable data for unit and integration tests.
+-   **Maintainability Challenge**: Static mock data, while simple, can become difficult to maintain and keep synchronized with evolving backend API contracts over time. A more dynamic mocking strategy might be considered for larger projects.
 
 ### System Diagram
-```mermaid
-graph TD
-FrontendApplication --> ApiService[ApiService Interface]
-ApiService --> BackendImpl[Backend Implementation]
-BackendImpl --> AxiosHttpClient[Axios HTTP Client]
-AxiosHttpClient --> ExternalApiGateway[External API Gateway]
-ExternalApiGateway --> BackendServices[Backend Services]
-```
+None significant.
