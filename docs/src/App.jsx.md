@@ -7,50 +7,51 @@
 # src/App.jsx
 
 ### Overview
-This file serves as the root component for the application, responsible for setting up client-side routing and defining the top-level application structure. It manages the initial route configuration, directing users to either a login page or the main application sections based on the path.
+This file serves as the root component for the React application, responsible for defining the top-level structure and client-side routing using `react-router-dom`. It orchestrates the rendering of different page components based on the URL path.
 
 ### Architecture & Role
-Architecturally, `App.jsx` resides at the presentation layer as the primary entry point for the React application's UI. It acts as the orchestrator for different application views by configuring `react-router-dom`, effectively defining the application's navigation flow.
+`App.jsx` resides at the highest level of the application's component hierarchy, acting as the entry point for the user interface. It belongs to the presentation layer, specifically handling the application's global layout and navigation flow.
 
 ### Key Components
-*   **`App` function component**: The default export. It initializes the `BrowserRouter` and defines the top-level `Routes`, directing traffic to the `Login` page or the `Main` component.
-*   **`Main` function component**: A sub-component rendered for all paths under `/*`. It contains further nested `Routes` for authenticated sections like `/home` and `/dashboard`. It also includes a `isUserLoggedIn` state, currently hardcoded, which would typically control access to these routes.
-*   **`API` constant**: An exported string defining the base URL for the backend API endpoint.
+*   **`App` Function Component**: The primary functional component that wraps the entire application, setting up the `BrowserRouter` and main `Routes`.
+*   **`Main` Function Component**: A nested component within `App` that handles routes intended for authenticated users. It contains state for user login status, though currently hardcoded.
+*   **`BrowserRouter`**: Manages the application's URL and history for client-side routing.
+*   **`Routes`**: A container for `Route` components, rendering the first child `Route` that matches the current URL.
+*   **`Route`**: Defines a mapping between a URL path and a component to be rendered.
+*   **`API` Constant**: A string constant defining the base URL for an external AWS API Gateway endpoint.
 
 ### Execution Flow / Behavior
-1.  The `App` component mounts and renders the `BrowserRouter`.
-2.  The `BrowserRouter` listens for URL changes and matches them against the defined `Routes`.
-3.  If the path is `/`, the `Login` component is rendered.
-4.  For any other path (`/*`), the `Main` component is rendered.
-5.  Inside `Main`, a `isUserLoggedIn` state (currently `true`) determines if its nested `Routes` are rendered.
-6.  If `isUserLoggedIn` is `true`, `Main` renders additional `Routes`:
-    *   `/home` renders the `Home` component.
-    *   `/dashboard` renders the `Dashboard` component.
-7.  Commented-out code within `Main` indicates an intended `useEffect` hook to `checkUser` login status via `apiService` and redirect if not logged in.
+When the application loads, the `App` component renders the `BrowserRouter`.
+1.  If the URL path is `/`, the `Login` component is rendered.
+2.  For any other URL path (`/*`), the `Main` component is rendered.
+3.  Inside `Main`, the `isUserLoggedIn` state is initialized to `true`. This currently bypasses any actual authentication check.
+4.  If `isUserLoggedIn` is `true`, `Main` renders its own nested `Routes`:
+    *   If the path is `/home`, the `Home` component is rendered.
+    *   If the path is `/dashboard`, the `Dashboard` component is rendered.
+The commented-out code in `Main` indicates an intended authentication flow involving `apiService.isLoggedIn()` and redirection using `useNavigate`.
 
 ### Dependencies
-*   **`react-router-dom`**: Provides core routing capabilities, including `BrowserRouter`, `Route`, `Routes`, and `useNavigate`.
-*   **`react`**: Used for the `useState` hook within the `Main` component.
-*   **`./App.css`**: Imports global or root-level styling for the application.
-*   **`./Pages/Login`**: The component rendered for the root path `/`.
-*   **`./Pages/Home`**: A component rendered within the `Main` section under `/home`.
-*   **`./Pages/Dashboard`**: A component rendered within the `Main` section under `/dashboard`.
-*   **`./Components/Sidenav`**: Imported but not currently used in the rendered JSX, suggesting a pending integration.
-*   **`./Services/api_service` (commented out)**: Indicates an intended dependency for user authentication checks against the backend API.
+*   **`react-router-dom`**: Provides core routing functionalities like `BrowserRouter`, `Route`, `Routes`, and `useNavigate`.
+*   **`./App.css`**: Contains global styles applied to the root `App` component.
+*   **`./Pages/Login`**: The component rendered for the root path.
+*   **`./Pages/Home`**: A page component rendered within the `Main` component's routes.
+*   **`./Pages/Dashboard`**: Another page component rendered within the `Main` component's routes.
+*   **`react`**: Specifically `useState` for managing component-level state.
+*   **`./Components/Sidenav`**: Imported but currently unused in the provided code.
+*   **`./Services/api_service`**: Commented out, indicating a potential or past dependency for API interactions, particularly for authentication.
 
 ### Design Notes
-*   The application structure uses a common pattern of separating public routes (like login) from protected routes (like home/dashboard) by nesting routes within a conditional component (`Main`).
-*   The `isUserLoggedIn` state in `Main` is a placeholder, hardcoded to `true`. This indicates that the authentication logic is either incomplete, temporarily bypassed, or handled elsewhere.
-*   The commented-out `useEffect` and `apiService.isLoggedIn()` calls suggest a future or past implementation for client-side authentication state management and redirection.
-*   The `Sidenav` component is imported but not integrated into the UI, which might be an oversight or a planned feature for later integration.
+*   **Centralized Routing**: The application's main routing logic is consolidated in this file, making it the primary point for managing navigation paths.
+*   **Authentication Placeholder**: The `Main` component includes commented-out code for an authentication check, suggesting that a user authentication flow is planned or partially implemented but currently bypassed by `isUserLoggedIn` being hardcoded to `true`. This requires further implementation for security.
+*   **API Endpoint Definition**: The `API` constant is defined directly within this file. For larger applications, it might be beneficial to move such configuration into a dedicated environment or configuration file for easier management across different deployment environments.
+*   **Unused Import**: The `Sidenav` component is imported but not rendered, indicating either incomplete feature implementation or a component intended for a different layout structure.
 
 ### Diagram
 ```mermaid
 graph TD
-AppRoot[App] --> BrowserRouter[BrowserRouter]
-BrowserRouter --> LoginRoute[Route / Login]
-BrowserRouter --> MainRoute[Route /* Main]
-MainRoute --> MainComponent[Main]
-MainComponent --> HomeRoute[Route /home Home]
-MainComponent --> DashboardRoute[Route /dashboard Dashboard]
+A[App] --> B[BrowserRouter]
+B --> C[Login]
+B --> D[Main]
+D --> E[Home]
+D --> F[Dashboard]
 ```
